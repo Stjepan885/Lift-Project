@@ -21,6 +21,7 @@ public class Accelerometer {
     private SensorManager sensorManager;
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
+    boolean on = true;
 
     Accelerometer(Context context){
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
