@@ -5,33 +5,56 @@ import java.util.List;
 
 public class Movment {
 
-    private List<Float> kretanje;
-
+    private float kretanje[];
+    private List<Float> filter;
+    final int filterSensitivity = 3;
+    private int filterCount = 2;
+    private float filterSum = 0;
 
     public Movment() {
-        this.kretanje = new ArrayList<Float>();
+        this.kretanje = new float[filterSensitivity];
+        this.filter = new ArrayList<>();
     }
 
-    public void Prati(float x){
+    public float Prati(float x){
 
-        int y = (int) x;
+        if (filterCount > 0){
+            kretanje[filterCount] = x;
+            filterCount--;
+        }else {
+            filterSum = 0;
+            for (int i = 0; i < filterSensitivity; i++) {
+                if (kretanje[i] < 0.15)
+                filterSum += kretanje[i];
+            }
+            filterSum /= filterSensitivity;
+            filterCount = 2;
+            filter.add(filterSum);
+        }
 
-        kretanje.add(new Float(x));
+        return filterSum;
+    }
+
+    public float Prati1(float x){
+
+
+
+        return filterSum;
     }
 
     public int getLength(){
 
-        return kretanje.size();
+        return filter.size();
     }
 
     public float getFloat(int i){
-        return this.kretanje.get(i);
+        return this.filter.get(i);
     }
 
 
     public String getValue(int i) {
 
-        float c = kretanje.get(i);
+        float c = filter.get(i);
 
         int x = (int) c;
 
@@ -39,4 +62,6 @@ public class Movment {
 
         return v;
     }
+
+
 }

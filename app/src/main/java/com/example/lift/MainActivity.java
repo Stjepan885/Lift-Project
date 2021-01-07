@@ -14,7 +14,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Accelerometer accelerometer;
     private  Gyroscope gyroscope;
-    private Movment kretanje1;
+    private float max = 0;
+    private float min = 1000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,30 +25,26 @@ public class MainActivity extends AppCompatActivity {
         //variables and layout elements initialization
         TextView text = findViewById(R.id.textView);
         Button but = findViewById(R.id.button);
-
-        final float[] max = {0};
+        TextView text1 = findViewById(R.id.textView1);
+        TextView text2 = findViewById(R.id.textView2);
 
 
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
 
-        kretanje1 = new Movment();
-
         //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
             public void onTranslation(float tx, float ty, float tz) {
-                text.setText("tx: " + Math.round(tx) + "ty: " + Math.round(ty) +"tz: "+ Math.round(tz));
-
-                if (tx < -5.00){
-
-                    kretanje1.Prati(tx);
-                    Log.i("dodan -", "tx: "+ tx);
-
-                }else if(tx > 5.00) {
-                    kretanje1.Prati(tx);
-                    Log.i("dodan +", "tx: "+ tx);
+                text.setText("" + String.format("%.2f", tx));
+                if (max < tx ){
+                    max = tx;
+                    text1.setText("" + String.format("%.2f", max));
+                }
+                if (min > tx){
+                    min = tx;
+                    text2.setText("" + String.format("%.2f", min));
                 }
             }
         });
@@ -55,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         gyroscope.setListener(new Gyroscope.Listener() {
             @Override
             public void onRotation(float rx, float ry, float rz) {
-                //text.setText("tx: " + Math.round(rx) + "ty: " + Math.round(ry) +"tz: "+ Math.round(rz));
+
+
             }
         });
 
@@ -68,14 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 if (accelerometer.on){
                     onPause();
                     accelerometer.on = false;
-
-                    Log.i("ds", " " + kretanje1.getLength());
-
-                    for (int i = 0; i <  kretanje1.getLength(); i++){
-
-                        Log.i("ovo", kretanje1.getFloat(i) + " ");
-                    }
-
                 }else{
                     onResume();
                     accelerometer.on = true;
