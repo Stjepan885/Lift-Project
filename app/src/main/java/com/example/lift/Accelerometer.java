@@ -21,6 +21,10 @@ public class Accelerometer {
     private SensorManager sensorManager;
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
+    boolean on = true;
+    private float gravity[] = new float[3];
+    private float linear_acceleration[] = new float[3];
+    private final float alpha = 0.5f;
 
     Accelerometer(Context context){
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -29,8 +33,16 @@ public class Accelerometer {
             @Override
             public void onSensorChanged(SensorEvent event) {
 
+                gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+                gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+                gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+
+                linear_acceleration[0] = event.values[0] - gravity[0];
+                linear_acceleration[1] = event.values[1] - gravity[1];
+                linear_acceleration[2] = event.values[2] - gravity[2];
+
                 if (listener != null){
-                    listener.onTranslation(event.values[0], event.values[1], event.values[2]);
+                    listener.onTranslation(linear_acceleration[0], linear_acceleration[1], linear_acceleration[2]);
                 }
             }
 

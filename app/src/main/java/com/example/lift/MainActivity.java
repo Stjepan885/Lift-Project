@@ -2,11 +2,28 @@ package com.example.lift;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
+import org.w3c.dom.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Movment movment;
     private Accelerometer accelerometer;
     private  Gyroscope gyroscope;
 
@@ -15,15 +32,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //variables and layout elements initialization
         TextView text = findViewById(R.id.textView);
+        Button but = findViewById(R.id.button);
+        TextView text1 = findViewById(R.id.textView1);
+        TextView text2 = findViewById(R.id.textView2);
+        Button chartButton = findViewById(R.id.buttonChart);
 
+        movment = new Movment();
+
+        //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
 
+        //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
             public void onTranslation(float tx, float ty, float tz) {
-               // text.setText("tx: " + Math.round(tx) + "ty: " + Math.round(ty) +"tz: "+ Math.round(tz));
+                text.setText("" + String.format("%.2f", tx));
+                text1.setText("" + String.format("%.2f", ty));
+                text2.setText("" + String.format("%.2f", tz));
+                movment.Prati(tx);
             }
         });
 
@@ -33,7 +62,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //other activity
+        but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (accelerometer.on){
+                    onPause();
+                    accelerometer.on = false;
+                }else{
+                    onResume();
+                    accelerometer.on = true;
+                }
+            }
+        });
+
+        chartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                Intent intent = new Intent(MainActivity.this, ChartActivity.class);
+                intent.putExtra("values", movment.getyValues());
+                startActivity(intent);
+            }
+        });
     }
+
+
 
 
     @Override
@@ -50,5 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
         accelerometer.unregister();
         gyroscope.unregister();
+
     }
 }
