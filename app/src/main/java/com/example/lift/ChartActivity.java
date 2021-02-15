@@ -60,5 +60,6 @@ public class ChartActivity extends AppCompatActivity {
         LineData data = new LineData(dataSet);
 
         mChart.setData(data);
+        int a;
     }
 }
