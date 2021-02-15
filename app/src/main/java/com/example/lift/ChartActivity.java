@@ -33,15 +33,29 @@ public class ChartActivity extends AppCompatActivity {
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(false);
 
-        ArrayList<Entry> yValues = (ArrayList<Entry>) getIntent().getSerializableExtra("values");
+        ArrayList<Entry> xValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesX");
+        ArrayList<Entry> yValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesY");
+        ArrayList<Entry> zValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesZ");
 
-        LineDataSet set1 = new LineDataSet(yValues,"Data set 1");
 
-        set1.setFillAlpha(110);
-        set1.setCircleColor(Color.RED);
+        LineDataSet setX = new LineDataSet(xValues,"Data set X");
+        setX.setFillAlpha(110);
+        setX.setCircleColor(Color.RED);
+        setX.setColors(Color.RED);
+        LineDataSet setY = new LineDataSet(yValues,"Data set Y");
+        setY.setFillAlpha(110);
+        setY.setCircleColor(Color.BLUE);
+        LineDataSet setZ = new LineDataSet(zValues,"Data set Z");
+        setZ.setFillAlpha(110);
+        setZ.setCircleColor(Color.GREEN);
+        setZ.setColors(Color.GREEN);
+
 
         ArrayList<ILineDataSet> dataSet = new ArrayList<>();
-        dataSet.add(set1);
+        dataSet.add(setX);
+        dataSet.add(setY);
+        dataSet.add(setZ);
+
 
         LineData data = new LineData(dataSet);
 

@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Movment movment;
     private Accelerometer accelerometer;
-    private  Gyroscope gyroscope;
+    private Gyroscope gyroscope;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         TextView text2 = findViewById(R.id.textView2);
         Button chartButton = findViewById(R.id.buttonChart);
 
-        movment = new Movment();
 
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
+        movment = new Movment();
 
         //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 text.setText("" + String.format("%.2f", tx));
                 text1.setText("" + String.format("%.2f", ty));
                 text2.setText("" + String.format("%.2f", tz));
-                movment.Prati(tx);
+                movment.Prati(tx,ty,tz);
             }
         });
 
@@ -80,8 +80,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onPause();
+                accelerometer.on = false;
                 Intent intent = new Intent(MainActivity.this, ChartActivity.class);
-                intent.putExtra("values", movment.getyValues());
+                intent.putExtra("valuesX", movment.getXValues());
+                intent.putExtra("valuesY", movment.getYValues());
+                intent.putExtra("valuesZ", movment.getZValues());
                 startActivity(intent);
             }
         });
