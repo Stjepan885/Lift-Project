@@ -2,12 +2,14 @@ package com.example.lift;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -34,10 +36,11 @@ public class MainActivity extends AppCompatActivity {
 
         //variables and layout elements initialization
         TextView text = findViewById(R.id.textView);
-        Button but = findViewById(R.id.button);
+        Button but = findViewById(R.id.buttonPause);
         TextView text1 = findViewById(R.id.textView1);
         TextView text2 = findViewById(R.id.textView2);
         Button chartButton = findViewById(R.id.buttonChart);
+        EditText floorNumber = findViewById(R.id.floorNumber);
 
 
         //sensor and activities initialization
@@ -89,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 
     @Override
     protected void onResume() {
