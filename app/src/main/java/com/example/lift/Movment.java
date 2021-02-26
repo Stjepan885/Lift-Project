@@ -12,13 +12,18 @@ public class Movment {
     private ArrayList<Entry> xValues = new ArrayList<>();
     private ArrayList<Entry> yValues = new ArrayList<>();
     private ArrayList<Entry> zValues = new ArrayList<>();
+    private ArrayList<Float> values = new ArrayList<>();
     float counter = 0;
+    long zeroMill = System.currentTimeMillis();
+
+
 
     public void Prati(float x, float y, float z){
-        xValues.add(new Entry(counter,x));
-        yValues.add(new Entry(counter,y));
-        zValues.add(new Entry(counter,z));
+        //xValues.add(new Entry(counter,x));
+        //yValues.add(new Entry(counter,y));
+        //zValues.add(new Entry(counter,z));
         //Log.i("s",""+ yValues.get(Math.round(counter)));
+        values.add(z);
         counter++;
     }
 
@@ -31,5 +36,6 @@ public class Movment {
     public ArrayList<Entry> getZValues() {
         return zValues;
     }
+    public ArrayList<Float> getValues() {return values;}
 
 }
