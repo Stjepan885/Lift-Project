@@ -94,6 +94,7 @@
         android:layout_height="30dp"
         android:ems="10"
         android:inputType="text"
+        android:paddingTop="50dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonPause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
