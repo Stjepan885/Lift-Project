@@ -1,0 +1,61 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/lift_information">
+
+        <EditTextPreference
+            app:key="address_key"
+            app:title="@string/lift_address"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="lift_number_key"
+            app:title="@string/lift_number"
+            app:useSimpleSummaryProvider="true"
+            android:key="example"/>
+
+        <EditTextPreference
+            android:key="lift_floor_number_key"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Number of floors"
+            app:defaultValue="0"/>
+
+        <MultiSelectListPreference
+            android:defaultValue="@array/reply_values"
+            android:entries="@array/reply_entries"
+            android:entryValues="@android:array/emailAddressTypes"
+            android:key="multi_select_list_preference_1"
+            android:title="Multi select list preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/user_information">
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="user_name_key"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/user_name"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

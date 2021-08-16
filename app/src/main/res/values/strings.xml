@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Lift</string>
+    <string name="save">Save</string>
+    <string name="graph">Show Graph</string>
+    <string name="reset">Reset</string>
+    <string name="pause">Pause</string>
+    <!-- Preference Titles -->
+    <string name="lift_information">Lift information</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="lift_address">Address</string>
+    <string name="lift_number">Lift number</string>
+    <string name="reply_title"></string>
+
+    <!-- User Preferences -->
+    <string name="user_name">User name</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="user_information">User information</string>
 </resources>

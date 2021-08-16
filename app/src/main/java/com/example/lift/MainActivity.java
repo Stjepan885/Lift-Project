@@ -2,38 +2,31 @@ package com.example.lift;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceManager;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
-import org.w3c.dom.Entity;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.prefs.Preferences;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,11 +67,21 @@ public class MainActivity extends AppCompatActivity {
         EditText nazivFile = findViewById(R.id.floorNumber);
         Button saveButton = findViewById(R.id.saveButton);
 
+        int NbOfFloors;
+
+        //preference attributes
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "0");
+        //NbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
+
+        //Toast.makeText(this, "" + NbOfFloors, Toast.LENGTH_LONG).show();
 
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
         movment = new Movment();
+
 
         //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
@@ -127,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -188,7 +192,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.preference_menu, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.settings){
+            Intent intentSettings = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intentSettings);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
