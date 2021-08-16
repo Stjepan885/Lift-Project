@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
 
+        //sensor and activities initialization
+        accelerometer = new Accelerometer(this);
+        gyroscope = new Gyroscope(this);
+        movment = new Movment();
 
         //variables and layout elements initialization
         TextView text = findViewById(R.id.textView);
@@ -66,21 +70,26 @@ public class MainActivity extends AppCompatActivity {
         Button chartButton = findViewById(R.id.buttonChart);
         EditText nazivFile = findViewById(R.id.floorNumber);
         Button saveButton = findViewById(R.id.saveButton);
+        TextView speed = findViewById(R.id.textView3);
+        Button resetButton = findViewById(R.id.buttonReset);
 
-        int NbOfFloors;
+        int nbOfFloors;
 
         //preference attributes
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "0");
-        //NbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
 
-        //Toast.makeText(this, "" + NbOfFloors, Toast.LENGTH_LONG).show();
+        try {
+            nbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
+            Toast.makeText(this, "" + nbOfFloors, Toast.LENGTH_LONG).show();
+            movment.setNbOfFloors(nbOfFloors);
+        }catch (Exception e){
+            nbOfFloors = 0;
+            Toast.makeText(this, "Error"+nbOfFloors, Toast.LENGTH_LONG).show();
+        }
 
-        //sensor and activities initialization
-        accelerometer = new Accelerometer(this);
-        gyroscope = new Gyroscope(this);
-        movment = new Movment();
+
 
 
         //sensor listeners
@@ -91,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 text1.setText("" + String.format("%.2f", ty));
                 text2.setText("" + String.format("%.2f", tz));
                 movment.Prati(tx,ty,tz);
+                speed.setText(movment.getSpeed()+"");
             }
         });
 
@@ -111,8 +121,6 @@ public class MainActivity extends AppCompatActivity {
                     onResume();
                     accelerometer.on = true;
                 }
-                long time= System.currentTimeMillis();
-                text.setText("" + time);
             }
         });
 
@@ -126,12 +134,10 @@ public class MainActivity extends AppCompatActivity {
                 //intent.putExtra("valuesY", movment.getYValues());
                 //intent.putExtra("valuesZ", movment.getZValues());
                 intent.putExtra("values", movment.getValues());
+                intent.putExtra("sumValues", movment.getSumValues());
                 startActivity(intent);
             }
         });
-
-
-
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +176,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        resetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onPause();
+                accelerometer.on = false;
+
+                movment.resetAll();
+                text.setText(""+0);
+                text1.setText(""+0);
+                text2.setText(""+0);
+                speed.setText(""+0);
+            }
+        });
     }
 
     @Override
@@ -204,4 +224,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

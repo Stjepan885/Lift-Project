@@ -33,27 +33,18 @@ public class ChartActivity extends AppCompatActivity {
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(false);
 
-        /*
-        ArrayList<Entry> xValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesX");
-        ArrayList<Entry> yValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesY");
-        ArrayList<Entry> zValues = (ArrayList<Entry>) getIntent().getSerializableExtra("valuesZ");
-        */
+
         ArrayList<Float> values = (ArrayList<Float>) getIntent().getSerializableExtra("values");
+        ArrayList<Float> sumValues = (ArrayList<Float>) getIntent().getSerializableExtra("sumValues");
         ArrayList<Entry> zValues = new ArrayList<>();
+        ArrayList<Entry> sumValuesChart = new ArrayList<>();
 
-        ArrayList<Entry> yValues = new ArrayList<>();
+        for(int i = 5; i < values.size(); i++){
 
-        float sum = 0;
 
-        for(int i = 0; i < values.size(); i++){
-
-            if (values.get(i) < sum){
-                sum = sum - values.get(i);
-            }else if(values.get(i) > sum){
-                sum = sum + values.get(i);
-            }
             zValues.add(new Entry(i,values.get(i)));
-            yValues.add(new Entry(i, sum ));
+
+            sumValuesChart.add(new Entry(i, sumValues.get(i)));
         }
 
 
@@ -62,7 +53,7 @@ public class ChartActivity extends AppCompatActivity {
         setX.setCircleColor(Color.RED);
         setX.setColors(Color.RED);
 
-        LineDataSet setY = new LineDataSet(yValues,"Data set Y");
+        LineDataSet setY = new LineDataSet(sumValuesChart,"Sum set Y");
         setY.setFillAlpha(110);
         setY.setCircleColor(Color.BLUE);
         /*
