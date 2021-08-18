@@ -24,7 +24,7 @@ public class Accelerometer {
     boolean on = true;
     private float gravity[] = new float[3];
     private float linear_acceleration[] = new float[3];
-    private final float alpha = 0.5f;
+    private float alpha = 0.5f;
 
     Accelerometer(Context context){
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -60,5 +60,9 @@ public class Accelerometer {
 
     public void unregister(){
         sensorManager.unregisterListener(sensorEventListener);
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
     }
 }

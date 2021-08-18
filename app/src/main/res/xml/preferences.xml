@@ -42,18 +42,15 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
 
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+    <PreferenceCategory app:title="Lift movement settings">
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@android:array/emailAddressTypes"
+            android:entryValues="@array/reply_entries"
+            android:key="list_preference_1"
+            android:title="Alpha" />
 
     </PreferenceCategory>
 

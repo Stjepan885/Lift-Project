@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "0");
 
+
         try {
             nbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
             Toast.makeText(this, "" + nbOfFloors, Toast.LENGTH_LONG).show();
@@ -190,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 speed.setText(""+0);
             }
         });
+
     }
 
     @Override
