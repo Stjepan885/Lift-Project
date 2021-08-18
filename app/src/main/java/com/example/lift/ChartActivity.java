@@ -1,11 +1,8 @@
 package com.example.lift;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -18,7 +15,7 @@ import java.util.ArrayList;
 
 public class ChartActivity extends AppCompatActivity {
 
-    private Movment movment;
+    private Movement movement;
     private LineChart mChart;
     private ArrayList<Entry> values;
 
@@ -28,7 +25,7 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
 
         mChart = (LineChart) findViewById(R.id.lineChart);
-        movment = new Movment();
+        movement = new Movement();
 
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(false);
@@ -53,7 +50,7 @@ public class ChartActivity extends AppCompatActivity {
         setX.setCircleColor(Color.RED);
         setX.setColors(Color.RED);
 
-        LineDataSet setY = new LineDataSet(sumValuesChart,"Sum set Y");
+        LineDataSet setY = new LineDataSet(sumValuesChart,"Sum set Y speed");
         setY.setFillAlpha(110);
         setY.setCircleColor(Color.BLUE);
         /*

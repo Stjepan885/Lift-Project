@@ -27,9 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public static final String KEY_PREF_LIFT_ADDRESS = "address_key";
-    public static final String KEY_PREF_LIFT_NUMBER = "lift_number_key";
     public static final String KEY_PREF_FLOOR_NUMBER = "lift_floor_number_key";
-    public static final String KEY_PREF_USER_NAME = "user_name_key";
+    public static final String KEY_PREF_START_FLOOR = "start_floor_key";
 
 }

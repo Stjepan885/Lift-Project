@@ -2,38 +2,32 @@ package com.example.lift;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceManager;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.prefs.Preferences;
-
 public class MainActivity extends AppCompatActivity {
 
-    private Movment movment;
+    private Movement movement;
     private Accelerometer accelerometer;
     private Gyroscope gyroscope;
 
+    private int nbOfFloors = 0;
+    private int startFloor = 999;
+    private boolean set = false;
+    private boolean startSet = false;
+    private boolean active = false;
+
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -46,62 +40,75 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
     }
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
+*/
 
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
-        movment = new Movment();
+        movement = new Movement();
 
         //variables and layout elements initialization
-        TextView text = findViewById(R.id.textView);
-        Button but = findViewById(R.id.buttonPause);
-        TextView text1 = findViewById(R.id.textView1);
-        TextView text2 = findViewById(R.id.textView2);
-        Button chartButton = findViewById(R.id.buttonChart);
-        EditText nazivFile = findViewById(R.id.floorNumber);
-        Button saveButton = findViewById(R.id.saveButton);
-        TextView speed = findViewById(R.id.textView3);
-        Button resetButton = findViewById(R.id.buttonReset);
+        TextView text2 = findViewById(R.id.accelerationText);
+        TextView speed = findViewById(R.id.speedText);
+        TextView trackingStatus = findViewById(R.id.trackingStatus);
+        TextView durationTime = findViewById(R.id.timeText);
 
-        int nbOfFloors;
+        Button chartButton = findViewById(R.id.buttonChart);
+        //Button saveButton = findViewById(R.id.saveButton);
+        Button resetButton = findViewById(R.id.buttonReset);
+        Button startButton = findViewById(R.id.startButton);
+        Button stopButton = findViewById(R.id.stopButton);
+
 
         //preference attributes
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "0");
-
+        String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "enter");
+        String stringStartFloorPref = sharedPref.getString(SettingsActivity.KEY_PREF_START_FLOOR, "enter");
 
         try {
             nbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
-            Toast.makeText(this, "" + nbOfFloors, Toast.LENGTH_LONG).show();
-            movment.setNbOfFloors(nbOfFloors);
+            movement.setNbOfFloors(nbOfFloors);
         }catch (Exception e){
             nbOfFloors = 0;
-            Toast.makeText(this, "Error"+nbOfFloors, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error, please set Number of floors again", Toast.LENGTH_LONG).show();
         }
 
+        try {
+            startFloor = Integer.parseInt(stringStartFloorPref);
+            movement.setStartFloor(nbOfFloors);
+        }catch (Exception e){
+            startFloor = 0;
+            Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
+        }
 
+        if (nbOfFloors > 1 && startFloor != 999){
+            set = true;
+            Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
+        }
 
 
         //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
             public void onTranslation(float tx, float ty, float tz) {
-                text.setText("" + String.format("%.2f", tx));
-                text1.setText("" + String.format("%.2f", ty));
-                text2.setText("" + String.format("%.2f", tz));
-                movment.Prati(tx,ty,tz);
-                speed.setText(movment.getSpeed()+"");
+                if (set == true && startSet == true) {
+                    text2.setText("" + String.format("%.2f", tz));
+                    movement.Prati(tx, ty, tz);
+                    speed.setText(movement.getSpeed()+"");
+                }
             }
         });
 
@@ -111,36 +118,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //other activity
-        but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (accelerometer.on){
-                    onPause();
-                    accelerometer.on = false;
-                }else{
-                    onResume();
-                    accelerometer.on = true;
-                }
-            }
-        });
+        //Buttons
 
         chartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPause();
-                accelerometer.on = false;
-                Intent intent = new Intent(MainActivity.this, ChartActivity.class);
-                //intent.putExtra("valuesX", movment.getXValues());
-                //intent.putExtra("valuesY", movment.getYValues());
-                //intent.putExtra("valuesZ", movment.getZValues());
-                intent.putExtra("values", movment.getValues());
-                intent.putExtra("sumValues", movment.getSumValues());
-                startActivity(intent);
+                if (active == false) {
+                    Intent intent = new Intent(MainActivity.this, ChartActivity.class);
+                    intent.putExtra("values", movement.getAccValues());
+                    intent.putExtra("sumValues", movement.getSumValues());
+                    startActivity(intent);
+                }
             }
         });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        /*saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onPause();
@@ -176,22 +167,39 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-
+        });*/
         resetButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 onPause();
                 accelerometer.on = false;
 
-                movment.resetAll();
-                text.setText(""+0);
-                text1.setText(""+0);
+                movement.resetAll();
                 text2.setText(""+0);
                 speed.setText(""+0);
             }
         });
-
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSet = true;
+                if (set == false){
+                    Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
+                    trackingStatus.setText("Active");
+                    movement.setZeroSec();
+                }
+            }
+        });
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSet = false;
+                Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
+                trackingStatus.setText("Not Active");
+            }
+        });
     }
 
     @Override
