@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         TextView speed = findViewById(R.id.speedText);
         TextView trackingStatus = findViewById(R.id.trackingStatus);
         TextView durationTime = findViewById(R.id.timeText);
+        TextView upDown = findViewById(R.id.upDownText);
 
         Button chartButton = findViewById(R.id.buttonChart);
         //Button saveButton = findViewById(R.id.saveButton);
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
             Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
+            movement.setNbOfFloors(nbOfFloors);
+            movement.setStartFloor(startFloor);
+            //movement.
         }
 
 
@@ -108,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     text2.setText("" + String.format("%.2f", tz));
                     movement.Prati(tx, ty, tz);
                     speed.setText(movement.getSpeed()+"");
+                    upDown.setText(movement.getUpDown()+"");
                 }
             }
         });
@@ -119,16 +124,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Buttons
-
-        chartButton.setOnClickListener(new View.OnClickListener() {
+        chartButton.setOnClickListener(new View.OnClickListener() {                                     //CHART button
             @Override
             public void onClick(View v) {
+
                 if (active == false) {
                     Intent intent = new Intent(MainActivity.this, ChartActivity.class);
                     intent.putExtra("values", movement.getAccValues());
                     intent.putExtra("sumValues", movement.getSumValues());
+                    intent.putExtra("speedValues", movement.getSpeedValues());
                     startActivity(intent);
                 }
+               // Toast.makeText(MainActivity.this, "Ready" + movement.getAccValues().size()+ " "+ movement.getSumValues().size() +" " + movement.getSpeedValues().size(), Toast.LENGTH_LONG).show();
             }
         });
         /*saveButton.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onPause();
                 accelerometer.on = false;
-
                 movement.resetAll();
                 text2.setText(""+0);
                 speed.setText(""+0);
@@ -195,8 +201,10 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onPause();
+                accelerometer.on = false;
                 startSet = false;
-                Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Tracking stoped" , Toast.LENGTH_LONG).show();
                 trackingStatus.setText("Not Active");
             }
         });
