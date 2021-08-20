@@ -49,40 +49,40 @@ public class Movement {
 
         if (onMove == false){
             //trip started +
-            if (sum > 2.0f ){
+            if (speed > 0.5f ){
                 onMove = true;
                 upDown = 1;
                 floorStartTime = ((System.currentTimeMillis()/1000)%60);
             }
-            if (sum < -2.0f){
+            if (speed < -0.5f){
                 onMove = true;
                 upDown = 2;
                 floorStartTime = ((System.currentTimeMillis()/1000)%60);
             }
         }else if (onMove == true){
-            if (sum > 2.0f){
+            if (speed > 0.5f){
                 onMove = false;
                 upDown = 0;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
-            if (sum < -2.0f){
+            if (speed < -0.5f){
                 onMove = false;
                 upDown = 0;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
         }
-/*
+
         if (floorChange == true){
             floorChange = false;
             for (int i = 0; i < nbOfFloors; i++){
-                if (timeBetweenFloors > (array[i] + 10) && ){
+                if (timeBetweenFloors > (array[i] + 10) ){
 
                 }
             }
         }
-*/
+
     }
 
 

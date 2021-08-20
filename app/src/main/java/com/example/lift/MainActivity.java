@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
             movement.setNbOfFloors(nbOfFloors);
             movement.setStartFloor(startFloor);
-            //movement.
+            movement.initializeArray();
         }
 
 
