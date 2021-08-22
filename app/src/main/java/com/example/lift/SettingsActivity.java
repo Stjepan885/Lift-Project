@@ -27,6 +27,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    public float acceleration = 0;
+
     public static final String KEY_PREF_FLOOR_NUMBER = "lift_floor_number_key";
     public static final String KEY_PREF_START_FLOOR = "start_floor_key";
 
