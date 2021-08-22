@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("sumValues", movement.getSumValues());
                     intent.putExtra("speedValues", movement.getSpeedValues());
                     startActivity(intent);
+                    trackingStatus.setText("Active"+ movement.getMaxAmp());
                 }
                // Toast.makeText(MainActivity.this, "Ready" + movement.getAccValues().size()+ " "+ movement.getSumValues().size() +" " + movement.getSpeedValues().size(), Toast.LENGTH_LONG).show();
             }
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
-                    trackingStatus.setText("Active");
+                    //trackingStatus.setText("Active");
                     movement.setZeroSec();
                 }
             }
