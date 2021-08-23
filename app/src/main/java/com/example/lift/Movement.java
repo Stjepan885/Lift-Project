@@ -1,5 +1,7 @@
 package com.example.lift;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class Movement {
@@ -9,6 +11,7 @@ public class Movement {
     private boolean onMove = false;
     private boolean still = true;
     private int upDown = 0; // up = 1, down = 2, stationary = 0
+    private int upDownPrevious = 0;
 
     private int nbOfFloors;
     private int startFloor;
@@ -33,7 +36,8 @@ public class Movement {
 
     private ArrayList<Float> levels = new ArrayList<>();
     private float[] array;
-
+    private float[] upArray;
+    private float[] downArray;
 
 
 
@@ -75,39 +79,88 @@ public class Movement {
         }else if (onMove == true){
             if (sum > 0.1f && upDown == 2){
                 onMove = false;
+                upDownPrevious = upDown;
                 upDown = 4;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
             if (sum < -0.1f && upDown == 1){
                 onMove = false;
+                upDownPrevious = upDown;
                 upDown = 4;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
         }
 
-/*
-        if (floorChange == true){
-            floorChange = false;
-            for (int i = 0; i < nbOfFloors; i++){
-                if (timeBetweenFloors > (array[i] + 10) && ){
 
+        if (floorChange == true && upDownPrevious == 1){
+            floorChange = false;
+
+            for (int i = 0; i < nbOfFloors-1; i++){
+                if (upArray[i] == 0){
+                    upArray[i] = timeBetweenFloors;
+                    currentFloor += i+1;
+                    if (currentFloor > nbOfFloors){
+                        currentFloor = nbOfFloors;
+                    }
+                    break;
+                }else if (timeBetweenFloors < (upArray[i] - 10)){
+                    for (int j = nbOfFloors-1; j > i; j--){
+                        upArray[j] = upArray[j-1];
+                    }
+                    upArray[i] = timeBetweenFloors;
+                    currentFloor += i+1;
+                    if (currentFloor > nbOfFloors){
+                        currentFloor = nbOfFloors;
+                    }
+                    break;
+                }else if (timeBetweenFloors < (upArray[i] + 1) && timeBetweenFloors > (upArray[i] - 1)){
+                    break;
                 }
             }
+
+
+
+        }else if (floorChange == true && upDownPrevious == 2){
+            floorChange = false;
+
+            for (int i = 0; i < nbOfFloors-1; i++){
+                if (downArray[i] == 0){
+                    downArray[i] = timeBetweenFloors;
+                    currentFloor -= i+1;
+                    if (currentFloor < 0){
+                        currentFloor = 0;
+                    }
+                    break;
+                }else if (timeBetweenFloors < (downArray[i] - 10)){
+                    for (int j = nbOfFloors-1; j > i; j--){
+                        downArray[j] = downArray[j-1];
+                    }
+                    downArray[i] = timeBetweenFloors;
+                    currentFloor -= i+1;
+                    break;
+                }else if (timeBetweenFloors < (downArray[i] + 1) && timeBetweenFloors > (downArray[i] - 1)){
+                    if (currentFloor < 0){
+                        currentFloor = 0;
+                    }
+                    break;
+                }
+            }
+
         }
-*/
+
 
     }
 
 
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
-    public void setStartFloor(int startFloor) { this.startFloor = startFloor; }
+    public void setStartFloor(int startFloor) { this.startFloor = startFloor; currentFloor = startFloor; }
 
-    public float getSpeed() {
-        return speed;
-    }
+    public float getSpeed() { return speed; }
+
+    public int getCurrentFloor() { return currentFloor; }
 
     public void resetAll(){
         accValues.clear();
@@ -133,7 +186,11 @@ public class Movement {
 
     public void initializeArray(){
         array = new float[nbOfFloors-1];
-        for (int i = 0; i < nbOfFloors; i++){
+        upArray = new float[nbOfFloors-1];
+        downArray = new float[nbOfFloors-1];
+        for (int i = 0; i < nbOfFloors-1; i++){
+            upArray[i] = 0;
+            downArray[i] = 0;
             array[i] = 0;
         }
     }
