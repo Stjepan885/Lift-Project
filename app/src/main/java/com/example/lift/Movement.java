@@ -55,38 +55,9 @@ public class Movement {
             maxAmp = z;
         }
 
-
-        if (still == false && z < 0.01 && z > -0.01){
-            still = true;
+        if (upDown == 4 && sum < 0.01 && sum > -0.01){
+            upDown = 0;
         }
-
-/*
-        if (onMove == false){
-            //trip started +
-            if (sum > 2.0f ){
-                onMove = true;
-                upDown = 1;
-                floorStartTime = ((System.currentTimeMillis()/1000)%60);
-            }
-            if (sum < -2.0f){
-                onMove = true;
-                upDown = 2;
-                floorStartTime = ((System.currentTimeMillis()/1000)%60);
-            }
-        }else if (onMove == true){
-            if (sum > 2.0f){
-                onMove = false;
-                upDown = 0;
-                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
-                floorChange = true;
-            }
-            if (speed < -0.5f){
-                onMove = false;
-                upDown = 0;
-                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
-                floorChange = true;
-            }
-        }*/
 
 
          if (onMove == false){
@@ -104,17 +75,18 @@ public class Movement {
         }else if (onMove == true){
             if (sum > 0.1f && upDown == 2){
                 onMove = false;
-                upDown = 0;
+                upDown = 4;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
             if (sum < -0.1f && upDown == 1){
                 onMove = false;
-                upDown = 0;
+                upDown = 4;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
         }
+
 /*
         if (floorChange == true){
             floorChange = false;
@@ -125,6 +97,7 @@ public class Movement {
             }
         }
 */
+
     }
 
 
