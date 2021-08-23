@@ -27,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean startSet = false;
     private boolean active = false;
 
+    private String maxAccStr;
+    private String minAccStr;
+    private float maxAcc;
+    private float minAcc;
+
     /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -94,6 +99,12 @@ public class MainActivity extends AppCompatActivity {
             startFloor = 0;
             Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
         }
+
+        maxAccStr = sharedPref.getString("MAX_ACC", "");
+        minAccStr = sharedPref.getString("MIN_ACC", "");
+
+        maxAcc = Float.parseFloat(maxAccStr);
+        maxAcc = Float.parseFloat(minAccStr);
 
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
