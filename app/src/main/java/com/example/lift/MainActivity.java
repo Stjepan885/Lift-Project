@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -100,11 +102,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
         }
 
-        maxAccStr = sharedPref.getString("MAX_ACC", "");
-        minAccStr = sharedPref.getString("MIN_ACC", "");
+        //maxAccStr = sharedPref.getString("MAX_ACC", "");
+        //minAccStr = sharedPref.getString("MIN_ACC", "");
 
-        maxAcc = Float.parseFloat(maxAccStr);
-        maxAcc = Float.parseFloat(minAccStr);
+        //maxAcc = Float.parseFloat(maxAccStr);
+        //maxAcc = Float.parseFloat(minAccStr);
 
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     movement.Prati(tx, ty, tz);
                     speed.setText(movement.getSpeed()+"");
                     upDown.setText(movement.getUpDown()+"");
-                    currentFloor.setText(movement.getCurrentFloor());
+                    currentFloor.setText(movement.getCurrentFloor() + "");
                 }
             }
         });

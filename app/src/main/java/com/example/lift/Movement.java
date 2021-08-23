@@ -64,31 +64,31 @@ public class Movement {
         }
 
 
-         if (onMove == false){
+         if (onMove == false && upDown == 0){
             //trip started +
             if (sum > 0.1f ){
                 onMove = true;
                 upDown = 1;
-                floorStartTime = ((System.currentTimeMillis()/1000)%60);
+                floorStartTime = System.currentTimeMillis();
             }
             if (sum < -0.1f){
                 onMove = true;
                 upDown = 2;
-                floorStartTime = ((System.currentTimeMillis()/1000)%60);
+                floorStartTime = System.currentTimeMillis();
             }
         }else if (onMove == true){
             if (sum > 0.1f && upDown == 2){
                 onMove = false;
                 upDownPrevious = upDown;
                 upDown = 4;
-                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
+                timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
                 floorChange = true;
             }
             if (sum < -0.1f && upDown == 1){
                 onMove = false;
                 upDownPrevious = upDown;
                 upDown = 4;
-                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
+                timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
                 floorChange = true;
             }
         }
@@ -97,50 +97,60 @@ public class Movement {
         if (floorChange == true && upDownPrevious == 1){
             floorChange = false;
 
+
+
             for (int i = 0; i < nbOfFloors-1; i++){
-                if (upArray[i] == 0){
-                    upArray[i] = timeBetweenFloors;
-                    currentFloor += i+1;
+
+                if (timeBetweenFloors < (upArray[i] + 500) && timeBetweenFloors > (upArray[i] - 500)){
+                    currentFloor += (i+1);
                     if (currentFloor > nbOfFloors){
                         currentFloor = nbOfFloors;
                     }
                     break;
-                }else if (timeBetweenFloors < (upArray[i] - 10)){
-                    for (int j = nbOfFloors-1; j > i; j--){
+                }else if (upArray[i] == 0){
+                    upArray[i] = timeBetweenFloors;
+                    currentFloor += (i+1);
+                    if (currentFloor > nbOfFloors){
+                        currentFloor = nbOfFloors;
+                    }
+                    break;
+                }else if (timeBetweenFloors < (upArray[i] - 500)){
+                    for (int j = nbOfFloors-2; j > i; j--){
                         upArray[j] = upArray[j-1];
                     }
                     upArray[i] = timeBetweenFloors;
-                    currentFloor += i+1;
+                    currentFloor += (i+1);
                     if (currentFloor > nbOfFloors){
                         currentFloor = nbOfFloors;
                     }
                     break;
-                }else if (timeBetweenFloors < (upArray[i] + 1) && timeBetweenFloors > (upArray[i] - 1)){
-                    break;
                 }
             }
-
-
 
         }else if (floorChange == true && upDownPrevious == 2){
             floorChange = false;
 
             for (int i = 0; i < nbOfFloors-1; i++){
-                if (downArray[i] == 0){
+
+                if (timeBetweenFloors < (downArray[i] + 500) && timeBetweenFloors > (downArray[i] - 500)){
+                    currentFloor -= i+1;
+                    if (currentFloor < 0){
+                        currentFloor = 0;
+                    }
+                    break;
+                }else if (downArray[i] == 0){
                     downArray[i] = timeBetweenFloors;
                     currentFloor -= i+1;
                     if (currentFloor < 0){
                         currentFloor = 0;
                     }
                     break;
-                }else if (timeBetweenFloors < (downArray[i] - 10)){
-                    for (int j = nbOfFloors-1; j > i; j--){
+                }else if (timeBetweenFloors < (downArray[i] - 500)){
+                    for (int j = nbOfFloors-2; j > i; j--){
                         downArray[j] = downArray[j-1];
                     }
                     downArray[i] = timeBetweenFloors;
                     currentFloor -= i+1;
-                    break;
-                }else if (timeBetweenFloors < (downArray[i] + 1) && timeBetweenFloors > (downArray[i] - 1)){
                     if (currentFloor < 0){
                         currentFloor = 0;
                     }
@@ -156,7 +166,7 @@ public class Movement {
 
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
-    public void setStartFloor(int startFloor) { this.startFloor = startFloor; currentFloor = startFloor; }
+    public void setStartFloor(int startFloor) { this.startFloor = startFloor-1; currentFloor = startFloor-1; }
 
     public float getSpeed() { return speed; }
 
@@ -167,14 +177,14 @@ public class Movement {
         sumValues.clear();
         speedValues.clear();
         counter=0;
-        zeroSec = System.currentTimeMillis()/1000;
+        zeroSec = System.currentTimeMillis();
         sum = 0;
         speed = 0;
     }
 
 
     public void setZeroSec() {
-        this.zeroSec = (System.currentTimeMillis()/1000)%60;
+        this.zeroSec = System.currentTimeMillis();
         on = true;
     }
 
