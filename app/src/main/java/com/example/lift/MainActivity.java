@@ -27,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean startSet = false;
     private boolean active = false;
 
+    private String maxAccStr;
+    private String minAccStr;
+    private float maxAcc;
+    private float minAcc;
+
     /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -95,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
         }
 
+        maxAccStr = sharedPref.getString("MAX_ACC", "");
+        minAccStr = sharedPref.getString("MIN_ACC", "");
+
+        maxAcc = Float.parseFloat(maxAccStr);
+        maxAcc = Float.parseFloat(minAccStr);
+
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
             Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
@@ -134,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("sumValues", movement.getSumValues());
                     intent.putExtra("speedValues", movement.getSpeedValues());
                     startActivity(intent);
+                    trackingStatus.setText("Active"+ movement.getMaxAmp());
                 }
                // Toast.makeText(MainActivity.this, "Ready" + movement.getAccValues().size()+ " "+ movement.getSumValues().size() +" " + movement.getSpeedValues().size(), Toast.LENGTH_LONG).show();
             }
@@ -193,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
-                    trackingStatus.setText("Active");
+                    //trackingStatus.setText("Active");
                     movement.setZeroSec();
                 }
             }

@@ -7,6 +7,7 @@ public class Movement {
     private boolean floorChange = false;
     private boolean on = false;
     private boolean onMove = false;
+    private boolean still = true;
     private int upDown = 0; // up = 1, down = 2, stationary = 0
 
     private int nbOfFloors;
@@ -19,7 +20,8 @@ public class Movement {
     private long floorStartTime;
     private long zeroSec;
 
-    private float maxAmp;
+    private float maxAmp=0;
+    private float minAmp=999;
 
     float counter = 0;
     float sum = 0;
@@ -40,27 +42,39 @@ public class Movement {
             z = 0;
         }
         counter++;
-        speed = speed + (((System.currentTimeMillis()/1000)%60)-zeroSec) * z;
+        speed = speed + 0.5f * z;
         sum += z;
         accValues.add(z);
         speedValues.add(speed);
         sumValues.add(sum);
 
+        if (z<minAmp){
+            minAmp = z;
+        }
+        if (z>maxAmp){
+            maxAmp = z;
+        }
 
+
+        if (still == false && z < 0.01 && z > -0.01){
+            still = true;
+        }
+
+/*
         if (onMove == false){
             //trip started +
-            if (speed > 0.5f ){
+            if (sum > 2.0f ){
                 onMove = true;
                 upDown = 1;
                 floorStartTime = ((System.currentTimeMillis()/1000)%60);
             }
-            if (speed < -0.5f){
+            if (sum < -2.0f){
                 onMove = true;
                 upDown = 2;
                 floorStartTime = ((System.currentTimeMillis()/1000)%60);
             }
         }else if (onMove == true){
-            if (speed > 0.5f){
+            if (sum > 2.0f){
                 onMove = false;
                 upDown = 0;
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
@@ -72,17 +86,45 @@ public class Movement {
                 timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
                 floorChange = true;
             }
-        }
+        }*/
 
+
+         if (onMove == false){
+            //trip started +
+            if (sum > 0.1f ){
+                onMove = true;
+                upDown = 1;
+                floorStartTime = ((System.currentTimeMillis()/1000)%60);
+            }
+            if (sum < -0.1f){
+                onMove = true;
+                upDown = 2;
+                floorStartTime = ((System.currentTimeMillis()/1000)%60);
+            }
+        }else if (onMove == true){
+            if (sum > 0.1f && upDown == 2){
+                onMove = false;
+                upDown = 0;
+                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
+                floorChange = true;
+            }
+            if (sum < -0.1f && upDown == 1){
+                onMove = false;
+                upDown = 0;
+                timeBetweenFloors = ((System.currentTimeMillis()/1000)%60) - floorStartTime;
+                floorChange = true;
+            }
+        }
+/*
         if (floorChange == true){
             floorChange = false;
             for (int i = 0; i < nbOfFloors; i++){
-                if (timeBetweenFloors > (array[i] + 10) ){
+                if (timeBetweenFloors > (array[i] + 10) && ){
 
                 }
             }
         }
-
+*/
     }
 
 
@@ -123,5 +165,7 @@ public class Movement {
         }
     }
 
-
+    public float getMaxAmp() {
+        return maxAmp;
+    }
 }
