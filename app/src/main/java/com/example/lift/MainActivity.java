@@ -100,11 +100,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
         }
 
-        maxAccStr = sharedPref.getString("MAX_ACC", "");
-        minAccStr = sharedPref.getString("MIN_ACC", "");
+        //maxAccStr = sharedPref.getString("MAX_ACC", "");
+        //minAccStr = sharedPref.getString("MIN_ACC", "");
 
-        maxAcc = Float.parseFloat(maxAccStr);
-        maxAcc = Float.parseFloat(minAccStr);
+        //maxAcc = Float.parseFloat(maxAccStr);
+        //maxAcc = Float.parseFloat(minAccStr);
 
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
