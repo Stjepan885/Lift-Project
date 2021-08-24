@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         TextView text2 = findViewById(R.id.accelerationText);
         TextView speed = findViewById(R.id.speedText);
         TextView trackingStatus = findViewById(R.id.trackingStatus);
-        TextView durationTime = findViewById(R.id.timeText);
+        TextView currentFloor = findViewById(R.id.timeText);
         TextView upDown = findViewById(R.id.upDownText);
 
         Button chartButton = findViewById(R.id.buttonChart);
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
             movement.setNbOfFloors(nbOfFloors);
             movement.setStartFloor(startFloor);
-            //movement.
+            movement.initializeArray();
         }
 
 
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     movement.Prati(tx, ty, tz);
                     speed.setText(movement.getSpeed()+"");
                     upDown.setText(movement.getUpDown()+"");
+                    currentFloor.setText(movement.getCurrentFloor() + "");
                 }
             }
         });
