@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean set = false;
     private boolean startSet = false;
     private boolean active = false;
-
-    private String maxAccStr;
-    private String minAccStr;
-    private float maxAcc;
-    private float minAcc;
 
     /*
     @Override
@@ -61,6 +57,20 @@ public class MainActivity extends AppCompatActivity {
         }
 */
 
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , 0);
+            int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
+            nbOfFloors = nF;
+            startFloor = sF;
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         gyroscope = new Gyroscope(this);
@@ -79,34 +89,6 @@ public class MainActivity extends AppCompatActivity {
         Button startButton = findViewById(R.id.startButton);
         Button stopButton = findViewById(R.id.stopButton);
 
-
-        //preference attributes
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String stringNbOfFloorsPref = sharedPref.getString(SettingsActivity.KEY_PREF_FLOOR_NUMBER, "enter");
-        String stringStartFloorPref = sharedPref.getString(SettingsActivity.KEY_PREF_START_FLOOR, "enter");
-
-        try {
-            nbOfFloors = Integer.parseInt(stringNbOfFloorsPref);
-            movement.setNbOfFloors(nbOfFloors);
-        }catch (Exception e){
-            nbOfFloors = 0;
-            Toast.makeText(this, "Error, please set Number of floors again", Toast.LENGTH_LONG).show();
-        }
-
-        try {
-            startFloor = Integer.parseInt(stringStartFloorPref);
-            movement.setStartFloor(nbOfFloors);
-        }catch (Exception e){
-            startFloor = 0;
-            Toast.makeText(this, "Error, please set start floors again", Toast.LENGTH_LONG).show();
-        }
-
-        //maxAccStr = sharedPref.getString("MAX_ACC", "");
-        //minAccStr = sharedPref.getString("MIN_ACC", "");
-
-        //maxAcc = Float.parseFloat(maxAccStr);
-        //maxAcc = Float.parseFloat(minAccStr);
 
         if (nbOfFloors > 1 && startFloor != 999){
             set = true;
@@ -150,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     trackingStatus.setText("Active"+ movement.getMaxAmp());
                 }
-               // Toast.makeText(MainActivity.this, "Ready" + movement.getAccValues().size()+ " "+ movement.getSumValues().size() +" " + movement.getSpeedValues().size(), Toast.LENGTH_LONG).show();
             }
         });
         /*saveButton.setOnClickListener(new View.OnClickListener() {
