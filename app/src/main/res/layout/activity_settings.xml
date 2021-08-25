@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Settings"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -36,8 +37,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="enter number of bottom floor"
-            android:inputType="number"
+            android:hint="enter number of bottom floor"
+            android:inputType="numberSigned"
             android:id="@+id/fFloorText"/>
 
 
@@ -58,8 +59,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="enter number of top floor"
-            android:inputType="number"
+            android:hint="enter number of top floor"
+            android:inputType="numberSigned"
             android:id="@+id/lFloorText"/>
 
     </LinearLayout>
@@ -79,9 +80,58 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="enter start floor"
-            android:inputType="number"
-            android:id="@+id/sFloorText"/>
+            android:hint="enter start floor"
+            android:inputType="numberSigned"
+            android:id="@+id/sFloorText"
+            />
+
+
+    </LinearLayout>
+    <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:text="Lift address"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="enter address"
+                android:id="@+id/addressText"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:text="Lift number"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:inputType="number"
+                android:id="@+id/liftNumberText"/>
+        </LinearLayout>
+    -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
 
 
     </LinearLayout>
@@ -91,36 +141,34 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp">
-        <TextView
+
+
+        <Button
+            android:id="@+id/buttonSaveSettings"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:text="Lift address"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="enter start floor"
-            android:id="@+id/addressText"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save"
+            android:clickable="true"
+            />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <TextView
+        <Button
+            android:id="@+id/buttonStartSettings"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:text="Lift number"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start"
+            android:clickable="true"
+            />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="enter start floor"
-            android:inputType="number"
-            android:id="@+id/liftNumberText"/>
+        <Button
+            android:id="@+id/buttonBackSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Back"
+            android:clickable="true"
+            />
 
 
     </LinearLayout>
