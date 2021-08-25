@@ -6,22 +6,19 @@ import java.util.ArrayList;
 
 public class Movement {
 
-    private boolean floorChange = false;
-    private boolean on = false;
-    private boolean onMove = false;
-    private boolean still = true;
-    private int upDown = 0; // up = 1, down = 2, stationary = 0
-    private int upDownPrevious = 0;
-
     private int nbOfFloors;
     private int startFloor;
     private int endFloor;
     private int currentFloor;
 
-    private long timeBetweenFloors;
-    private long overallTime;
+    private boolean onMove = false;
+    private int upDown = 0; // up = 1, down = 2, stationary = 0
+    private int upDownPrevious = 0;
+    private boolean floorChange = false;
+
+    private long startTime;
     private long floorStartTime;
-    private long zeroSec;
+    private long timeBetweenFloors;
 
     private float maxAmp=0;
     private float minAmp=999;
@@ -178,15 +175,13 @@ public class Movement {
         sumValues.clear();
         speedValues.clear();
         counter=0;
-        zeroSec = System.currentTimeMillis();
         sum = 0;
         speed = 0;
     }
 
 
     public void setZeroSec() {
-        this.zeroSec = System.currentTimeMillis();
-        on = true;
+        this.startTime = System.currentTimeMillis();
     }
 
     public int getUpDown() { return upDown; }
@@ -208,5 +203,9 @@ public class Movement {
 
     public float getMaxAmp() {
         return maxAmp;
+    }
+
+    public long getOverallTime() {
+        return System.currentTimeMillis() - startTime;
     }
 }

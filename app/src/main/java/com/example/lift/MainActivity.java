@@ -24,9 +24,13 @@ public class MainActivity extends AppCompatActivity {
 
     private int nbOfFloors = 0;
     private int startFloor = 999;
+    private int endFloor;
+
     private boolean set = false;
-    private boolean startSet = false;
+    private boolean startSet = true;
     private boolean active = false;
+
+    private long overallTime;
 
     TextView accelerationTextActivity;
     TextView speedTextActivity;
@@ -145,6 +149,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });*/
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (set == false && startSet == false){
+                    Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
+                }else if (startSet == false){
+                    Toast.makeText(MainActivity.this, "Reset" , Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
+                    trackingStatusTextActivity.setText("Active");
+                    movement.setZeroSec();
+                }
+            }
+        });
         resetButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -156,19 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 currentFloorTextActivity.setText("" + startFloor);
                 speedTextActivity.setText(""+0);
                 upDownTextActivity.setText("Stationary");
-            }
-        });
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 startSet = true;
-                if (set == false){
-                    Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
-                    trackingStatusTextActivity.setText("Active");
-                    movement.setZeroSec();
-                }
             }
         });
         stopButton.setOnClickListener(new View.OnClickListener() {
@@ -178,9 +184,15 @@ public class MainActivity extends AppCompatActivity {
                 accelerometer.on = false;
                 startSet = false;
                 Toast.makeText(MainActivity.this, "Tracking stoped" , Toast.LENGTH_LONG).show();
+                saveCurrentStatus();
                 trackingStatusTextActivity.setText("Not Active");
             }
         });
+    }
+
+    private void saveCurrentStatus() {
+        endFloor = movement.getCurrentFloor();
+        overallTime = movement.getOverallTime();
     }
 
     private void getLiftInformation() {
