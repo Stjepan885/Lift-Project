@@ -69,6 +69,9 @@ public class Calibrate extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 on = true;
+                minAcceleration = 999;
+                maxAcceleration = 0;
+
             }
         });
 
