@@ -2,6 +2,7 @@ package com.example.lift;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,20 +30,17 @@ public class Calibrate extends AppCompatActivity {
     private boolean on = false;
     private float sum = 0;
 
-    public static final String MAX_ACC = "0";
-    public static final String MIN_ACC = "999";
-
-    public static final String SHARED_PREFS = "sharedPrefs";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrate);
 
-        start.findViewById(R.id.startButton);
-        save.findViewById(R.id.saveButton);
-        maxAccText.findViewById(R.id.maxAccText);
-        minAccText.findViewById(R.id.minAccText);
+        start = (Button) findViewById(R.id.startButton);
+        save = (Button) findViewById(R.id.saveButton);
+        maxAccText = (TextView) findViewById(R.id.maxAccText);
+        minAccText = (TextView) findViewById(R.id.minAccText);
+
+        getLiftAcceleration();
 
         accelerometer = new Accelerometer(this);
 
@@ -77,19 +75,56 @@ public class Calibrate extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                on = false;
 
-                String max = String.valueOf(maxAcceleration);
-                String min = String.valueOf(minAcceleration);
+                try {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                editor.putString(MAX_ACC, max);
-                editor.putString(MIN_ACC, min);
+                    if (maxAcceleration > 0 && minAcceleration < 999){
+                        editor.putFloat("MAX_ACC_KEY", maxAcceleration);
+                        editor.putFloat("MIN_ACC_KEY", minAcceleration);
+                        editor.commit();
+                        Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
+                    }
 
-                editor.apply();
+                }catch (Exception e){
+                    Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
+                }
 
-                Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+
             }
         });
+    }
+
+    private void getLiftAcceleration() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            float max = sharedPreferences.getFloat("MAX_ACC_KEY" , 0);
+            float min = sharedPreferences.getFloat("MIN_ACC_KEY" , 0);
+            maxAccText.setText(max+"");
+            minAccText.setText(min+"");
+            maxAcceleration = max;
+            minAcceleration = min;
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(Calibrate.this, "No saved data", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        accelerometer.register();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        accelerometer.unregister();
     }
 }

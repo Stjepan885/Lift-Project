@@ -20,8 +20,10 @@ public class Movement {
     private long floorStartTime;
     private long timeBetweenFloors;
 
-    private float maxAmp=0;
-    private float minAmp=999;
+    private float maxAmp;
+    private float minAmp;
+    private float averMaxAmp;
+    private float averMinAmp;
 
     float counter = 0;
     float sum = 0;
@@ -50,12 +52,6 @@ public class Movement {
         speedValues.add(speed);
         sumValues.add(sum);
 
-        if (z<minAmp){
-            minAmp = z;
-        }
-        if (z>maxAmp){
-            maxAmp = z;
-        }
 
         if (upDown == 4 && sum < 0.01 && sum > -0.01){
             upDown = 0;
@@ -64,25 +60,25 @@ public class Movement {
 
          if (onMove == false && upDown == 0){
             //trip started +
-            if (sum > 0.1f ){
+            if (sum > averMaxAmp ){
                 onMove = true;
                 upDown = 1;
                 floorStartTime = System.currentTimeMillis();
             }
-            if (sum < -0.1f){
+            if (sum < averMinAmp){
                 onMove = true;
                 upDown = 2;
                 floorStartTime = System.currentTimeMillis();
             }
         }else if (onMove == true){
-            if (sum > 0.1f && upDown == 2){
+            if (sum > averMaxAmp && upDown == 2){
                 onMove = false;
                 upDownPrevious = upDown;
                 upDown = 4;
                 timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
                 floorChange = true;
             }
-            if (sum < -0.1f && upDown == 1){
+            if (sum < averMinAmp && upDown == 1){
                 onMove = false;
                 upDownPrevious = upDown;
                 upDown = 4;
@@ -199,13 +195,20 @@ public class Movement {
             downArray[i] = 0;
             array[i] = 0;
         }
-    }
 
-    public float getMaxAmp() {
-        return maxAmp;
     }
 
     public long getOverallTime() {
         return System.currentTimeMillis() - startTime;
+    }
+
+    public void setMaxAmp(float maxAmp) {
+        this.maxAmp = maxAmp;
+        averMaxAmp = maxAmp*0.7f;
+    }
+
+    public void setMinAmp(float minAmp) {
+        this.minAmp = minAmp;
+        averMinAmp = minAmp*0.7f;
     }
 }

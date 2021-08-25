@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private int startFloor = 999;
     private int endFloor;
 
+    private float maxAcceleration;
+    private float minAcceleration;
+
     private boolean set = false;
     private boolean startSet = true;
     private boolean active = false;
@@ -204,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
             nbOfFloors = nF;
             startFloor = sF;
 
+            float max = sharedPreferences.getFloat("MAX_ACC_KEY" , 0);
+            float min = sharedPreferences.getFloat("MIN_ACC_KEY" , 0);
+            maxAcceleration = max;
+            minAcceleration = min;
+
         }catch (Exception e){
             Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
             toast.show();
@@ -212,11 +220,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfSet() {
-        if (nbOfFloors > 1 && startFloor != 999){
+        if (nbOfFloors > 1 && startFloor != 999 && maxAcceleration > 0 && minAcceleration < 999){
             set = true;
             Toast.makeText(this, "Ready to start tracking", Toast.LENGTH_LONG).show();
             movement.setNbOfFloors(nbOfFloors);
             movement.setStartFloor(startFloor);
+            movement.setMaxAmp(maxAcceleration);
+            movement.setMinAmp(minAcceleration);
             movement.initializeArray();
         }
     }

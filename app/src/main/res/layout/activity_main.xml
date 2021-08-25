@@ -17,12 +17,13 @@
         android:layout_marginLeft="39dp"
         android:padding="5dp"
         android:text="0"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.222" />
+        app:layout_constraintVertical_bias="0.273" />
 
     <TextView
         android:id="@+id/accelerationText"
@@ -32,11 +33,12 @@
         android:layout_marginLeft="196dp"
         android:padding="5dp"
         android:text="0"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.176" />
+        app:layout_constraintVertical_bias="0.222" />
 
     <Button
         android:id="@+id/buttonReset"
@@ -119,6 +121,7 @@
         android:layout_height="wrap_content"
         android:text="Not active"
         android:padding="5dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,6 +143,7 @@
         app:layout_constraintVertical_bias="0.175" />
 
     <TextView
+        android:gravity="center"
         android:id="@+id/timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -152,7 +156,7 @@
         app:layout_constraintHorizontal_bias="0.401"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.273" />
+        app:layout_constraintVertical_bias="0.176" />
 
     <TextView
         android:id="@+id/accText"
@@ -188,6 +192,7 @@
         android:layout_marginLeft="105dp"
         android:padding="5dp"
         android:text="stationary"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.274"

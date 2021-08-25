@@ -20,7 +20,7 @@ public class LaunchingActivity extends AppCompatActivity {
 
         Button startButton = findViewById(R.id.startButtonL);
         Button preferencesButton = findViewById(R.id.preferenceButtonL);
-        Button settingsButton = findViewById(R.id.settingsButtonL);
+        Button calibrateButton = findViewById(R.id.calibrateButtonL);
         Button exitButton = findViewById(R.id.exitButtonL);
 
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -52,10 +52,11 @@ public class LaunchingActivity extends AppCompatActivity {
             }
         });
 
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent preferenceIntent = new Intent(LaunchingActivity.this, Calibrate.class);
+                LaunchingActivity.this.startActivity(preferenceIntent);
             }
         });
 
