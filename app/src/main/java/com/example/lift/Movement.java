@@ -29,6 +29,7 @@ public class Movement {
     float counter = 0;
     float sum = 0;
     float speed = 0;
+    float maxSpeed = 0;
 
     private ArrayList<Float> accValues = new ArrayList<>();
     private ArrayList<Float> sumValues = new ArrayList<>();
@@ -41,7 +42,7 @@ public class Movement {
 
 
 
-    public void Prati(float x, float y, float z){
+    public void Prati(float z){
         if (counter < 10){
             z = 0;
         }

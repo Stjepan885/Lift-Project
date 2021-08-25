@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 public class Accelerometer {
 
     public interface Listener{
-        void onTranslation(float tx, float ty, float tz);
+        void onTranslation(float tz);
     }
 
     private Listener listener;
@@ -42,7 +42,7 @@ public class Accelerometer {
                 linear_acceleration[2] = event.values[2] - gravity[2];
 
                 if (listener != null){
-                    listener.onTranslation(linear_acceleration[0], linear_acceleration[1], linear_acceleration[2]);
+                    listener.onTranslation(linear_acceleration[2]);
                 }
             }
 

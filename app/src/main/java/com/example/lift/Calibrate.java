@@ -48,7 +48,7 @@ public class Calibrate extends AppCompatActivity {
 
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
-            public void onTranslation(float tx, float ty, float tz) {
+            public void onTranslation(float tz) {
                 if (on) {
                     if (counter == 0) {
                         sum += tz;

@@ -21,13 +21,18 @@ public class MainActivity extends AppCompatActivity {
 
     private Movement movement;
     private Accelerometer accelerometer;
-    private Gyroscope gyroscope;
 
     private int nbOfFloors = 0;
     private int startFloor = 999;
     private boolean set = false;
     private boolean startSet = false;
     private boolean active = false;
+
+    TextView accelerationTextActivity;
+    TextView speedTextActivity;
+    TextView trackingStatusTextActivity;
+    TextView currentFloorTextActivity;
+    TextView upDownTextActivity;
 
     /*
     @Override
@@ -56,32 +61,16 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
 */
-
-        try {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-            int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , 0);
-            int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
-            nbOfFloors = nF;
-            startFloor = sF;
-
-        }catch (Exception e){
-            Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
-            toast.show();
-        }
-
-
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
-        gyroscope = new Gyroscope(this);
         movement = new Movement();
 
         //variables and layout elements initialization
-        TextView text2 = findViewById(R.id.accelerationText);
-        TextView speed = findViewById(R.id.speedText);
-        TextView trackingStatus = findViewById(R.id.trackingStatus);
-        TextView currentFloor = findViewById(R.id.timeText);
-        TextView upDown = findViewById(R.id.upDownText);
+        accelerationTextActivity = (TextView) findViewById(R.id.accelerationText);
+        speedTextActivity = (TextView) findViewById(R.id.speedText);
+        trackingStatusTextActivity = (TextView) findViewById(R.id.trackingStatus);
+        currentFloorTextActivity = (TextView) findViewById(R.id.timeText);
+        upDownTextActivity = (TextView) findViewById(R.id.upDownText);
 
         Button chartButton = findViewById(R.id.buttonChart);
         //Button saveButton = findViewById(R.id.saveButton);
@@ -89,33 +78,18 @@ public class MainActivity extends AppCompatActivity {
         Button startButton = findViewById(R.id.startButton);
         Button stopButton = findViewById(R.id.stopButton);
 
-
-        if (nbOfFloors > 1 && startFloor != 999){
-            set = true;
-            Toast.makeText(this, "Ready to start tracking" , Toast.LENGTH_LONG).show();
-            movement.setNbOfFloors(nbOfFloors);
-            movement.setStartFloor(startFloor);
-            movement.initializeArray();
-        }
-
+        getLiftInformation();
+        checkIfSet();
 
         //sensor listeners
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
-            public void onTranslation(float tx, float ty, float tz) {
+            public void onTranslation(float tz) {
                 if (set == true && startSet == true) {
-                    text2.setText("" + String.format("%.2f", tz));
-                    movement.Prati(tx, ty, tz);
-                    speed.setText(movement.getSpeed()+"");
-                    upDown.setText(movement.getUpDown()+"");
-                    currentFloor.setText(movement.getCurrentFloor() + "");
+                    accelerationTextActivity.setText("" + String.format("%.2f", tz));
+                    movement.Prati(tz);
+                    updateVariables();
                 }
-            }
-        });
-
-        gyroscope.setListener(new Gyroscope.Listener() {
-            @Override
-            public void onRotation(float rx, float ry, float rz) {
             }
         });
 
@@ -130,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("sumValues", movement.getSumValues());
                     intent.putExtra("speedValues", movement.getSpeedValues());
                     startActivity(intent);
-                    trackingStatus.setText("Active"+ movement.getMaxAmp());
+                    trackingStatusTextActivity.setText("Active");
                 }
             }
         });
@@ -177,8 +151,11 @@ public class MainActivity extends AppCompatActivity {
                 onPause();
                 accelerometer.on = false;
                 movement.resetAll();
-                text2.setText(""+0);
-                speed.setText(""+0);
+                accelerationTextActivity.setText(""+0);
+                trackingStatusTextActivity.setText("Not Active");
+                currentFloorTextActivity.setText("" + startFloor);
+                speedTextActivity.setText(""+0);
+                upDownTextActivity.setText("Stationary");
             }
         });
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -189,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
-                    //trackingStatus.setText("Active");
+                    trackingStatusTextActivity.setText("Active");
                     movement.setZeroSec();
                 }
             }
@@ -201,9 +178,55 @@ public class MainActivity extends AppCompatActivity {
                 accelerometer.on = false;
                 startSet = false;
                 Toast.makeText(MainActivity.this, "Tracking stoped" , Toast.LENGTH_LONG).show();
-                trackingStatus.setText("Not Active");
+                trackingStatusTextActivity.setText("Not Active");
             }
         });
+    }
+
+    private void getLiftInformation() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , 0);
+            int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
+            nbOfFloors = nF;
+            startFloor = sF;
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+    }
+
+    private void checkIfSet() {
+        if (nbOfFloors > 1 && startFloor != 999){
+            set = true;
+            Toast.makeText(this, "Ready to start tracking", Toast.LENGTH_LONG).show();
+            movement.setNbOfFloors(nbOfFloors);
+            movement.setStartFloor(startFloor);
+            movement.initializeArray();
+        }
+    }
+
+    private void updateVariables() {
+        speedTextActivity.setText(movement.getSpeed()+"");
+        currentFloorTextActivity.setText(movement.getCurrentFloor() + "");
+
+        switch (movement.getUpDown()){
+            case 0:
+                upDownTextActivity.setText("Stationary");
+                break;
+            case 1:
+                upDownTextActivity.setText("Going up");
+                break;
+            case 2:
+                upDownTextActivity.setText("Going down");
+                break;
+            case 4:
+                upDownTextActivity.setText("Braking");
+                break;
+        }
     }
 
     @Override
@@ -211,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         accelerometer.register();
-        gyroscope.register();
     }
 
     @Override
@@ -219,8 +241,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         accelerometer.unregister();
-        gyroscope.unregister();
-
     }
 
     @Override
@@ -230,13 +250,5 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.settings){
-            Intent intentSettings = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intentSettings);
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 }

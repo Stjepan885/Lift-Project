@@ -28,11 +28,11 @@ public class Settings extends AppCompatActivity {
         EditText nbOfFloorsText = findViewById(R.id.fFloorText);
         EditText startFloorText = findViewById(R.id.sFloorText);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , Integer.parseInt(""));
-            int sF = sharedPreferences.getInt("START_FLOOR_KEY" , Integer.parseInt(""));
+            int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , 0);
+            int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
             nbOfFloorsText.setText(nF+"");
             startFloorText.setText(sF+"");
         }catch (Exception e){
@@ -51,17 +51,25 @@ public class Settings extends AppCompatActivity {
                     nbOfFloors = Integer.parseInt(nbOfFloorsText.getText().toString());
                     sFloor = Integer.parseInt(startFloorText.getText().toString());
 
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    if (nbOfFloors >= sFloor){
 
-                    editor.putInt("NUMBER_OF_FLOORS_KEY" , nbOfFloors);
-                    editor.putInt("START_FLOOR_KEY", sFloor);
-                    editor.commit();
 
-                    Toast toast1 = Toast.makeText(Settings.this, "Saved", Toast.LENGTH_LONG);
-                    toast1.show();
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    saved = true;
+                        editor.putInt("NUMBER_OF_FLOORS_KEY" , nbOfFloors);
+                        editor.putInt("START_FLOOR_KEY", sFloor);
+                        editor.commit();
+
+                        Toast toast1 = Toast.makeText(Settings.this, "Saved", Toast.LENGTH_LONG);
+                        toast1.show();
+
+                        saved = true;
+                    }else{
+                        Toast toast = Toast.makeText(Settings.this, "Number of floor must be grater or equal than start floor", Toast.LENGTH_LONG);
+                        toast.show();
+                        saved = false;
+                    }
 
                 }catch (Exception e){
                     Toast toast = Toast.makeText(Settings.this, "Error", Toast.LENGTH_LONG);
@@ -77,7 +85,7 @@ public class Settings extends AppCompatActivity {
                     Intent preferenceIntent = new Intent(Settings.this, MainActivity.class);
                     Settings.this.startActivity(preferenceIntent);
                 }else{
-                    Toast toast = Toast.makeText(Settings.this, "No information about lift", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(Settings.this, "No correct information about lift", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -86,7 +94,8 @@ public class Settings extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent preferenceIntent = new Intent(Settings.this, LaunchingActivity.class);
+                Settings.this.startActivity(preferenceIntent);
             }
         });
     }
