@@ -19,16 +19,18 @@ public class Calibrate extends AppCompatActivity {
 
     private Button start;
     private Button save;
+    private Button reset;
     private TextView maxAccText;
     private TextView minAccText;
 
     private Accelerometer accelerometer;
 
     private float maxAcceleration = 0;
-    private float minAcceleration = 999;
+    private float minAcceleration = 0;
     private int counter = 10;
     private boolean on = false;
     private float sum = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class Calibrate extends AppCompatActivity {
 
         start = (Button) findViewById(R.id.startButton);
         save = (Button) findViewById(R.id.saveButton);
+        reset = findViewById(R.id.buttonReset);
         maxAccText = (TextView) findViewById(R.id.maxAccText);
         minAccText = (TextView) findViewById(R.id.minAccText);
 
@@ -48,19 +51,7 @@ public class Calibrate extends AppCompatActivity {
             @Override
             public void onTranslation(float tz) {
                 if (on) {
-                    if (counter == 0) {
-                        sum += tz;
-                        if (maxAcceleration < sum) {
-                            maxAcceleration = sum;
-                            maxAccText.setText(sum+"");
-                        }
-                        if (minAcceleration > sum) {
-                            minAcceleration = sum;
-                            minAccText.setText(sum+"");
-                        }
-                    } else {
-                        counter--;
-                    }
+                    calibrateAcceleration(tz);
                 }
             }
         });
@@ -69,7 +60,7 @@ public class Calibrate extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 on = true;
-                minAcceleration = 999;
+                minAcceleration = 0;
                 maxAcceleration = 0;
 
             }
@@ -100,6 +91,49 @@ public class Calibrate extends AppCompatActivity {
 
             }
         });
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                on = false;
+
+                try {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    editor.putFloat("MAX_ACC_KEY", 0);
+                    editor.putFloat("MIN_ACC_KEY", 0);
+                    editor.commit();
+                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+
+                    maxAccText.setText(0+"");
+                    minAccText.setText(0+"");
+
+                }catch (Exception e){
+                    Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+    }
+
+
+    private void calibrateAcceleration(float tz) {
+        if (counter == 0) {
+            sum += tz;
+            if (maxAcceleration < sum) {
+                maxAcceleration = sum;
+                maxAccText.setText(sum+"");
+            }
+            if (minAcceleration > sum) {
+                minAcceleration = sum;
+                minAccText.setText(sum+"");
+            }
+        } else {
+            counter--;
+        }
+
     }
 
     private void getLiftAcceleration() {

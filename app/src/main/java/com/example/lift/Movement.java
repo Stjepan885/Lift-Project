@@ -91,8 +91,6 @@ public class Movement {
         if (floorChange == true && upDownPrevious == 1){
             floorChange = false;
 
-
-
             for (int i = 0; i < nbOfFloors-1; i++){
 
                 if (timeBetweenFloors < (upArray[i] + 500) && timeBetweenFloors > (upArray[i] - 500)){

@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 onPause();
                 accelerometer.on = false;
                 startSet = false;
-                Toast.makeText(MainActivity.this, "Tracking stoped" , Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Tracking stopped" , Toast.LENGTH_LONG).show();
                 saveCurrentStatus();
                 trackingStatusTextActivity.setText("Not Active");
             }
