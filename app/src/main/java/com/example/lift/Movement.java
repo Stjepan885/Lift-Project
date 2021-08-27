@@ -50,8 +50,8 @@ public class Movement {
     public void Prati(float z){
         if (counter < 10){
             z = 0;
+            counter++;
         }
-        counter++;
         speed = speed + 0.5f * z;
         sum += z;
         accValues.add(z);

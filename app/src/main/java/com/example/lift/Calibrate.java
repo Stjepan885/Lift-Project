@@ -20,16 +20,47 @@ public class Calibrate extends AppCompatActivity {
     private Button start;
     private Button save;
     private Button reset;
+    private Button startTimeCalibration;
+    private Button saveTime;
+    private Button resetTime;
     private TextView maxAccText;
     private TextView minAccText;
 
+    private TextView oldTimeTwoFloorsUp;
+    private TextView oldTimeTwoFloorsDown;
+    private TextView newTimeTwoFloorsUp;
+    private TextView newTimeTwoFloorsDown;
+
     private Accelerometer accelerometer;
 
+    private int counter = 0;
+
+    //acceleration
     private float maxAcceleration = 0;
     private float minAcceleration = 0;
-    private int counter = 10;
-    private boolean on = false;
+    private boolean onAcc = false;
+    private  boolean accSet = false;
+
+    //time
+    private long oldTimeUp;
+    private long oldTimeDown;
+    private boolean timeSet = false;
+    private boolean onTime = false;
+
     private float sum = 0;
+
+    private boolean onMove = false;
+    private int upDown = 0; // up = 1, down = 2, stationary = 0
+    private int upDownPrevious = 0;
+    private boolean floorChange = false;
+
+    private long floorStartTime;
+    private long timeBetweenFloors;
+
+    private float maxAmp;
+    private float minAmp;
+    private float averMaxAmp;
+    private float averMinAmp;
 
 
     @Override
@@ -43,15 +74,31 @@ public class Calibrate extends AppCompatActivity {
         maxAccText = (TextView) findViewById(R.id.maxAccText);
         minAccText = (TextView) findViewById(R.id.minAccText);
 
+
+        startTimeCalibration = findViewById(R.id.buttonStartTimeCalibration);
+        saveTime = findViewById(R.id.saveTimeButton);
+        resetTime = findViewById(R.id.buttonTimeReset);
+        oldTimeTwoFloorsUp = findViewById(R.id.oldTimeTwoFloorsUp);
+        oldTimeTwoFloorsDown = findViewById(R.id.oldTimeTwoFloorsDown);
+        newTimeTwoFloorsUp = findViewById(R.id.newTimeTwoFloorsUp);
+        newTimeTwoFloorsDown = findViewById(R.id.newTimeTwoFloorsDown);
+
+        timeSetOff();
+
         getLiftAcceleration();
+        getLiftTimeBetweenTwoFloors();
 
         accelerometer = new Accelerometer(this);
+
+        onPause();
 
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
             public void onTranslation(float tz) {
-                if (on) {
+                if (onAcc) {
                     calibrateAcceleration(tz);
+                }else if(onTime){
+
                 }
             }
         });
@@ -59,23 +106,24 @@ public class Calibrate extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                on = true;
+                onResume();
+                timeSetOff();
+                onAcc = true;
                 minAcceleration = 0;
                 maxAcceleration = 0;
-
             }
         });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                on = false;
+                onAcc = false;
 
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    if (maxAcceleration > 0 && minAcceleration < 999){
+                    if (maxAcceleration > 0 && minAcceleration < 0){
                         editor.putFloat("MAX_ACC_KEY", maxAcceleration);
                         editor.putFloat("MIN_ACC_KEY", minAcceleration);
                         editor.commit();
@@ -83,6 +131,10 @@ public class Calibrate extends AppCompatActivity {
                     }else{
                         Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
                     }
+
+                    counter = 10;
+                    onPause();
+                    timeSet();
 
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
@@ -95,7 +147,9 @@ public class Calibrate extends AppCompatActivity {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                on = false;
+                onAcc = false;
+                timeSet = false;
+                timeSetOff();
 
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -112,12 +166,171 @@ public class Calibrate extends AppCompatActivity {
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        saveTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onTime = false;
+                try {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", 0);
+                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", 0);
+                    editor.commit();
+                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
 
 
+                }catch (Exception e){
+                    Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        startTimeCalibration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
+                floorStartTime = System.currentTimeMillis();
+                averMaxAmp = maxAcceleration * 0.8f;
+                averMinAmp = minAcceleration * 0.8f;
+                upDown = 0;
+                sum = 0;
+            }
+        });
+
+        resetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTime = false;
+                try {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", 0);
+                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", 0);
+                    editor.commit();
+                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+
+
+                }catch (Exception e){
+                    Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
+    private void timeSet() {
+        startTimeCalibration.getBackground().setAlpha(255);
+        saveTime.getBackground().setAlpha(255);
+        resetTime.getBackground().setAlpha(255);
+        startTimeCalibration.setClickable(true);
+        saveTime.setClickable(true);
+        resetTime.setClickable(true);
+        getLiftTimeBetweenTwoFloors();
+    }
+
+    private void timeSetOff(){
+        startTimeCalibration.getBackground().setAlpha(100);
+        saveTime.getBackground().setAlpha(100);
+        resetTime.getBackground().setAlpha(100);
+        startTimeCalibration.setClickable(false);
+        saveTime.setClickable(false);
+        resetTime.setClickable(false);
+        onTime = false;
+    }
+
+    private void calibrateTime(float tz) {
+        if (counter < 10){
+            tz = 0;
+            counter++;
+        }
+        sum += tz;
+
+
+        if (upDown == 4 && sum < 0.01 && sum > -0.01){
+            upDown = 0;
+        }
+
+
+        if (onMove == false && upDown == 0){
+            //trip started +
+            if (sum > averMaxAmp ){
+                onMove = true;
+                upDown = 1;
+                floorStartTime = System.currentTimeMillis();
+            }
+            if (sum < averMinAmp){
+                onMove = true;
+                upDown = 2;
+                floorStartTime = System.currentTimeMillis();
+            }
+        }else if (onMove == true){
+            if (sum > averMaxAmp && upDown == 2){
+                onMove = false;
+                upDownPrevious = upDown;
+                upDown = 4;
+                timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
+                floorChange = true;
+            }
+            if (sum < averMinAmp && upDown == 1){
+                onMove = false;
+                upDownPrevious = upDown;
+                upDown = 4;
+                timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
+                floorChange = true;
+            }
+        }
+
+    }
+
+    private void getLiftTimeBetweenTwoFloors() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            long timeUp = sharedPreferences.getLong("TIME_TWO_FLOORS_UP_KEY" , 0);
+            long timeDown = sharedPreferences.getLong("TIME_TWO_FLOORS_DOWN_KEY" , 0);
+
+            if (timeUp != 0){
+                oldTimeTwoFloorsUp.setText(""+timeUp);
+                oldTimeUp = timeUp;
+            }
+            if (timeDown != 0){
+                oldTimeTwoFloorsDown.setText(""+timeDown);
+                oldTimeDown = timeDown;
+            }
+
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(Calibrate.this, "No saved data", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
+    private void getLiftAcceleration() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            float max = sharedPreferences.getFloat("MAX_ACC_KEY" , 0);
+            float min = sharedPreferences.getFloat("MIN_ACC_KEY" , 0);
+            maxAccText.setText(max+"");
+            minAccText.setText(min+"");
+            maxAcceleration = max;
+            minAcceleration = min;
+
+            if (maxAcceleration != 0 && minAcceleration != 0){
+                timeSet();
+                onAcc = false;
+            }
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(Calibrate.this, "No saved data", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
 
     private void calibrateAcceleration(float tz) {
         if (counter == 0) {
@@ -134,23 +347,6 @@ public class Calibrate extends AppCompatActivity {
             counter--;
         }
 
-    }
-
-    private void getLiftAcceleration() {
-        try {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-            float max = sharedPreferences.getFloat("MAX_ACC_KEY" , 0);
-            float min = sharedPreferences.getFloat("MIN_ACC_KEY" , 0);
-            maxAccText.setText(max+"");
-            minAccText.setText(min+"");
-            maxAcceleration = max;
-            minAcceleration = min;
-
-        }catch (Exception e){
-            Toast toast = Toast.makeText(Calibrate.this, "No saved data", Toast.LENGTH_LONG);
-            toast.show();
-        }
     }
 
     @Override
