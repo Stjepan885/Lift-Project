@@ -19,6 +19,7 @@ public class Movement {
     private long startTime;
     private long floorStartTime;
     private long timeBetweenFloors;
+    private int timeLimit;
 
     private float maxAmp;
     private float minAmp;
@@ -28,7 +29,6 @@ public class Movement {
     float counter = 0;
     float sum = 0;
     float speed = 0;
-    float maxSpeed = 0;
 
     private ArrayList<Float> accValues = new ArrayList<>();
     private ArrayList<Float> sumValues = new ArrayList<>();
@@ -39,6 +39,12 @@ public class Movement {
     private float[] upArray;
     private float[] downArray;
 
+
+    private long timeBetween1;
+    private long timeBetween2;
+
+    private boolean upFull = false;
+    private boolean downFull = false;
 
 
     public void Prati(float z){
@@ -91,7 +97,22 @@ public class Movement {
         if (floorChange == true && upDownPrevious == 1){
             floorChange = false;
 
-            for (int i = 0; i < nbOfFloors-1; i++){
+            //!!!!!!!!!!!!!!!!!!
+            timeBetween1 = timeBetweenFloors;
+
+            if (upArray[nbOfFloors-1] != 0){
+                upFull = true;
+            }
+
+            int i;
+
+            if (upFull == false){
+                i = 0;
+            }else{
+                i = currentFloor;
+            }
+
+            for (; i < nbOfFloors-1; i++){
 
                 if (timeBetweenFloors < (upArray[i] + 500) && timeBetweenFloors > (upArray[i] - 500)){
                     currentFloor += (i+1);
@@ -121,8 +142,22 @@ public class Movement {
 
         }else if (floorChange == true && upDownPrevious == 2){
             floorChange = false;
+            timeBetween2 = timeBetweenFloors;
 
-            for (int i = 0; i < nbOfFloors-1; i++){
+            int i;
+            if (downArray[nbOfFloors-1] != 0){
+                downFull = true;
+            }
+
+            if (downFull == false){
+                i = 0;
+            }else{
+                i = currentFloor;
+            }
+
+
+
+            for (; i < nbOfFloors-1; i++){
 
                 if (timeBetweenFloors < (downArray[i] + 500) && timeBetweenFloors > (downArray[i] - 500)){
                     currentFloor -= i+1;
@@ -159,8 +194,6 @@ public class Movement {
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
     public void setStartFloor(int startFloor) { this.startFloor = startFloor-1; currentFloor = startFloor-1; }
-
-    public float getSpeed() { return speed; }
 
     public int getCurrentFloor() { return currentFloor; }
 
@@ -208,5 +241,13 @@ public class Movement {
     public void setMinAmp(float minAmp) {
         this.minAmp = minAmp;
         averMinAmp = minAmp*0.7f;
+    }
+
+    public long getTime() {
+        return timeBetween1;
+    }
+
+    public long getTime1() {
+        return timeBetween2;
     }
 }

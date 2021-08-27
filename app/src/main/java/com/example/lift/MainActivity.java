@@ -35,11 +35,17 @@ public class MainActivity extends AppCompatActivity {
 
     private long overallTime;
 
+    private long time;
+    private
+
     TextView accelerationTextActivity;
-    TextView speedTextActivity;
     TextView trackingStatusTextActivity;
     TextView currentFloorTextActivity;
     TextView upDownTextActivity;
+
+    TextView timeBetween;
+    TextView timeBetween1;
+
 
     /*
     @Override
@@ -74,10 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
         //variables and layout elements initialization
         accelerationTextActivity = (TextView) findViewById(R.id.accelerationText);
-        speedTextActivity = (TextView) findViewById(R.id.speedText);
         trackingStatusTextActivity = (TextView) findViewById(R.id.trackingStatus);
         currentFloorTextActivity = (TextView) findViewById(R.id.timeText);
         upDownTextActivity = (TextView) findViewById(R.id.upDownText);
+
+        timeBetween = findViewById(R.id.textTimeBetween);
+        timeBetween1 = findViewById(R.id.textTimeBetween1);
 
         Button chartButton = findViewById(R.id.buttonChart);
         //Button saveButton = findViewById(R.id.saveButton);
@@ -169,13 +177,10 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                onPause();
-                accelerometer.on = false;
                 movement.resetAll();
                 accelerationTextActivity.setText(""+0);
                 trackingStatusTextActivity.setText("Not Active");
                 currentFloorTextActivity.setText("" + startFloor);
-                speedTextActivity.setText(""+0);
                 upDownTextActivity.setText("Stationary");
                 startSet = true;
             }
@@ -232,8 +237,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateVariables() {
-        speedTextActivity.setText(movement.getSpeed()+"");
         currentFloorTextActivity.setText(movement.getCurrentFloor() + "");
+        timeBetween.setText(""+ movement.getTime());
+        timeBetween1.setText(""+ movement.getTime1());
 
         switch (movement.getUpDown()){
             case 0:
