@@ -20,6 +20,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_settings);
 
         Button saveButton = findViewById(R.id.buttonSaveSettings);
         Button startButton = findViewById(R.id.buttonStartSettings);
@@ -36,7 +37,7 @@ public class Settings extends AppCompatActivity {
             nbOfFloorsText.setText(nF+"");
             startFloorText.setText(sF+"");
         }catch (Exception e){
-            Toast toast = Toast.makeText(Settings.this, "No saved data", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(Settings.this, "No information on numbers of floors", Toast.LENGTH_LONG);
             toast.show();
         }
 
@@ -61,12 +62,12 @@ public class Settings extends AppCompatActivity {
                         editor.putInt("START_FLOOR_KEY", sFloor);
                         editor.commit();
 
-                        Toast toast1 = Toast.makeText(Settings.this, "Saved", Toast.LENGTH_LONG);
+                        Toast toast1 = Toast.makeText(Settings.this, "Data saved", Toast.LENGTH_LONG);
                         toast1.show();
 
                         saved = true;
                     }else{
-                        Toast toast = Toast.makeText(Settings.this, "Number of floor must be grater or equal than start floor", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(Settings.this, "Number of floor must be grater or equal than starting floor", Toast.LENGTH_LONG);
                         toast.show();
                         saved = false;
                     }
@@ -85,7 +86,7 @@ public class Settings extends AppCompatActivity {
                     Intent preferenceIntent = new Intent(Settings.this, MainActivity.class);
                     Settings.this.startActivity(preferenceIntent);
                 }else{
-                    Toast toast = Toast.makeText(Settings.this, "No correct information about lift", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(Settings.this, "Incorrect information about lift", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }

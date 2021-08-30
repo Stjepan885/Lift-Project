@@ -23,6 +23,7 @@ public class ChartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
+        setContentView(R.layout.activity_chart);
 
         mChart = (LineChart) findViewById(R.id.lineChart);
 

@@ -71,6 +71,7 @@ public class Calibrate extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrate);
+        setContentView(R.layout.activity_calibrate);
 
         start = (Button) findViewById(R.id.startButton);
         save = (Button) findViewById(R.id.saveButton);
@@ -135,9 +136,9 @@ public class Calibrate extends AppCompatActivity {
                         editor.putFloat("MAX_ACC_KEY", maxAcceleration);
                         editor.putFloat("MIN_ACC_KEY", minAcceleration);
                         editor.commit();
-                        Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Calibrate.this, "Acceleration information saved", Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Calibrate.this, "No acceleration information", Toast.LENGTH_SHORT).show();
                     }
 
                     counter = 10;
@@ -145,7 +146,7 @@ public class Calibrate extends AppCompatActivity {
                     timeSet();
 
                 }catch (Exception e){
-                    Toast.makeText(Calibrate.this, "No data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Calibrate.this, "No acceleration information", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -167,7 +168,7 @@ public class Calibrate extends AppCompatActivity {
                     editor.putFloat("MAX_ACC_KEY", 0);
                     editor.putFloat("MIN_ACC_KEY", 0);
                     editor.commit();
-                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Calibrate.this, "Acceleration data reset", Toast.LENGTH_SHORT).show();
 
                     maxAccText.setText(0+"");
                     minAccText.setText(0+"");
@@ -206,7 +207,7 @@ public class Calibrate extends AppCompatActivity {
                     editor.putLong("TIME_TWO_FLOORS_UP_KEY", upTimeNew);
                     editor.putLong("TIME_TWO_FLOORS_DOWN_KEY", downTimeNew);
                     editor.commit();
-                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Calibrate.this, "Time information saved", Toast.LENGTH_SHORT).show();
 
 
                 }catch (Exception e){
@@ -227,7 +228,7 @@ public class Calibrate extends AppCompatActivity {
                     editor.putLong("TIME_TWO_FLOORS_UP_KEY", 0);
                     editor.putLong("TIME_TWO_FLOORS_DOWN_KEY", 0);
                     editor.commit();
-                    Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Calibrate.this, "Time information reset", Toast.LENGTH_SHORT).show();
                     newTimeTwoFloorsUp.setText(0+"");
                     newTimeTwoFloorsDown.setText(0+"");
                 }catch (Exception e){
@@ -351,7 +352,7 @@ public class Calibrate extends AppCompatActivity {
             }
 
         }catch (Exception e){
-            Toast toast = Toast.makeText(Calibrate.this, "No saved data", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(Calibrate.this, "No information", Toast.LENGTH_LONG);
             toast.show();
         }
     }

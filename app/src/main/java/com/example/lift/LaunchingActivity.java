@@ -17,6 +17,7 @@ public class LaunchingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launching);
+        setContentView(R.layout.activity_launching);
 
         Button startButton = findViewById(R.id.startButtonL);
         Button preferencesButton = findViewById(R.id.preferenceButtonL);

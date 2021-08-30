@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }catch (Exception e){
-            Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(MainActivity.this, "No lift information", Toast.LENGTH_LONG);
             toast.show();
         }
 
@@ -246,8 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateVariables() {
         currentFloorTextActivity.setText(movement.getCurrentFloor() + "");
-        timeBetween.setText(""+ movement.getTime());
-        timeBetween1.setText(""+ movement.getTime1());
 
         switch (movement.getUpDown()){
             case 0:

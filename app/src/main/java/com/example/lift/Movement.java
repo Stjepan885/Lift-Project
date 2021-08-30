@@ -92,6 +92,9 @@ public class Movement {
             for (int i = 0; i < nbOfFloors; i++){
                 if (timeBetweenFloors < (upArray[i] + timeLimitUp) && timeBetweenFloors > (upArray[i] - timeLimitUp)){
                     currentFloor = currentFloor + (i+1);
+                    if(currentFloor > nbOfFloors){
+                        currentFloor = nbOfFloors;
+                    }
                     levels.add(currentFloor);
                     break;
                 }
@@ -103,6 +106,9 @@ public class Movement {
             for (int i = 0; i < nbOfFloors; i++){
                 if (timeBetweenFloors < (downArray[i] + timeLimitDown) && timeBetweenFloors > (downArray[i] - timeLimitDown)){
                     currentFloor = currentFloor - (i+1);
+                    if(currentFloor < 0){
+                        currentFloor = 0;
+                    }
                     levels.add(currentFloor);
                     break;
                 }
