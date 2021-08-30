@@ -30,6 +30,8 @@ public class Calibrate extends AppCompatActivity {
     private TextView oldTimeTwoFloorsDown;
     private TextView newTimeTwoFloorsUp;
     private TextView newTimeTwoFloorsDown;
+    private TextView activeAcc;
+    private TextView activeTime;
 
     private Accelerometer accelerometer;
 
@@ -84,6 +86,9 @@ public class Calibrate extends AppCompatActivity {
         oldTimeTwoFloorsDown = findViewById(R.id.oldTimeTwoFloorsDown);
         newTimeTwoFloorsUp = findViewById(R.id.newTimeTwoFloorsUp);
         newTimeTwoFloorsDown = findViewById(R.id.newTimeTwoFloorsDown);
+        activeAcc = findViewById(R.id.textActiveAcc);
+        activeTime = findViewById(R.id.textActiveTime);
+
 
         timeSetOff();
 
@@ -113,6 +118,7 @@ public class Calibrate extends AppCompatActivity {
                 onAcc = true;
                 minAcceleration = 0;
                 maxAcceleration = 0;
+                activeAcc.setText("Active");
             }
         });
 
@@ -120,7 +126,7 @@ public class Calibrate extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onAcc = false;
-
+                activeAcc.setText("Not active");
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -151,6 +157,7 @@ public class Calibrate extends AppCompatActivity {
             public void onClick(View v) {
                 onAcc = false;
                 timeSet = false;
+                activeAcc.setText("Not Active");
                 timeSetOff();
                 onPause();
                 try {
@@ -176,6 +183,7 @@ public class Calibrate extends AppCompatActivity {
         startTimeCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activeTime.setText("Active");
                 onResume();
                 onTime = true;
                 floorStartTime = System.currentTimeMillis();
@@ -189,14 +197,14 @@ public class Calibrate extends AppCompatActivity {
         saveTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                activeTime.setText("Not active");
                 onTime = false;
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", upTimeNew);
-                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", downTimeNew);
+                    editor.putLong("TIME_TWO_FLOORS_UP_KEY", upTimeNew);
+                    editor.putLong("TIME_TWO_FLOORS_DOWN_KEY", downTimeNew);
                     editor.commit();
                     Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
 
@@ -210,13 +218,14 @@ public class Calibrate extends AppCompatActivity {
         resetTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activeTime.setText("Not active");
                 onTime = false;
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", 0);
-                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", 0);
+                    editor.putLong("TIME_TWO_FLOORS_UP_KEY", 0);
+                    editor.putLong("TIME_TWO_FLOORS_DOWN_KEY", 0);
                     editor.commit();
                     Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
                     newTimeTwoFloorsUp.setText(0+"");

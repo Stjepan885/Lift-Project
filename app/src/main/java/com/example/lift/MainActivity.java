@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private long overallTime;
 
-    private long time;
-    private
+    private long timeUp;
+    private long timeDown;
 
     TextView accelerationTextActivity;
     TextView trackingStatusTextActivity;
@@ -217,6 +217,12 @@ public class MainActivity extends AppCompatActivity {
             maxAcceleration = max;
             minAcceleration = min;
 
+            long timeU = sharedPreferences.getLong("TIME_TWO_FLOORS_UP_KEY",0);
+            long timeD = sharedPreferences.getLong("TIME_TWO_FLOORS_DOWN_KEY", 0);
+            timeUp = timeU;
+            timeDown = timeD;
+
+
         }catch (Exception e){
             Toast toast = Toast.makeText(MainActivity.this, "No saved data", Toast.LENGTH_LONG);
             toast.show();
@@ -225,13 +231,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfSet() {
-        if (nbOfFloors > 1 && startFloor != 999 && maxAcceleration > 0 && minAcceleration < 999){
+        if (nbOfFloors > 1 && startFloor != 999 && maxAcceleration > 0 && minAcceleration < 0 && timeUp != 0 && timeDown != 0){
             set = true;
             Toast.makeText(this, "Ready to start tracking", Toast.LENGTH_LONG).show();
             movement.setNbOfFloors(nbOfFloors);
             movement.setStartFloor(startFloor);
             movement.setMaxAmp(maxAcceleration);
             movement.setMinAmp(minAcceleration);
+            movement.setTimeUp(timeUp);
+            movement.setTimeDown(timeDown);
             movement.initializeArray();
         }
     }

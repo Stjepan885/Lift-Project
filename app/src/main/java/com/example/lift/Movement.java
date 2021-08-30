@@ -1,5 +1,6 @@
 package com.example.lift;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,10 +18,12 @@ public class Movement {
     private long startTime;
     private long floorStartTime;
     private long timeBetweenFloors;
-    private int timeLimit;
+    private float timeLimitUp;
+    private float timeLimitDown;
 
-    private float maxAmp;
-    private float minAmp;
+    private long timeUp;
+    private long timeDown;
+
     private float averMaxAmp;
     private float averMinAmp;
 
@@ -32,18 +35,9 @@ public class Movement {
     private ArrayList<Float> sumValues = new ArrayList<>();
     private ArrayList<Float> speedValues = new ArrayList<>();
 
-    private ArrayList<Float> levels = new ArrayList<>();
-    private float[] array;
+    private ArrayList<Integer> levels = new ArrayList<>();
     private float[] upArray;
     private float[] downArray;
-
-
-    private long timeBetween1;
-    private long timeBetween2;
-
-    private boolean upFull = false;
-    private boolean downFull = false;
-
 
     public void Prati(float z){
         if (counter < 10){
@@ -95,99 +89,26 @@ public class Movement {
         if (floorChange == true && upDownPrevious == 1){
             floorChange = false;
 
-            //!!!!!!!!!!!!!!!!!!
-            timeBetween1 = timeBetweenFloors;
-
-            if (upArray[nbOfFloors-1] != 0){
-                upFull = true;
-            }
-
-            int i;
-
-            if (upFull == false){
-                i = 0;
-            }else{
-                i = currentFloor;
-            }
-
-            for (; i < nbOfFloors-1; i++){
-
-                if (timeBetweenFloors < (upArray[i] + 500) && timeBetweenFloors > (upArray[i] - 500)){
-                    currentFloor += (i+1);
-                    if (currentFloor > nbOfFloors){
-                        currentFloor = nbOfFloors;
-                    }
-                    break;
-                }else if (upArray[i] == 0){
-                    upArray[i] = timeBetweenFloors;
-                    currentFloor += (i+1);
-                    if (currentFloor > nbOfFloors){
-                        currentFloor = nbOfFloors;
-                    }
-                    break;
-                }else if (timeBetweenFloors < (upArray[i] - 500)){
-                    for (int j = nbOfFloors-2; j > i; j--){
-                        upArray[j] = upArray[j-1];
-                    }
-                    upArray[i] = timeBetweenFloors;
-                    currentFloor += (i+1);
-                    if (currentFloor > nbOfFloors){
-                        currentFloor = nbOfFloors;
-                    }
+            for (int i = 0; i < nbOfFloors; i++){
+                if (timeBetweenFloors < (upArray[i] + timeLimitUp) && timeBetweenFloors > (upArray[i] - timeLimitUp)){
+                    currentFloor = currentFloor + (i+1);
+                    levels.add(currentFloor);
                     break;
                 }
             }
 
         }else if (floorChange == true && upDownPrevious == 2){
             floorChange = false;
-            timeBetween2 = timeBetweenFloors;
 
-            int i;
-            if (downArray[nbOfFloors-1] != 0){
-                downFull = true;
-            }
-
-            if (downFull == false){
-                i = 0;
-            }else{
-                i = currentFloor;
-            }
-
-
-
-            for (; i < nbOfFloors-1; i++){
-
-                if (timeBetweenFloors < (downArray[i] + 500) && timeBetweenFloors > (downArray[i] - 500)){
-                    currentFloor -= i+1;
-                    if (currentFloor < 0){
-                        currentFloor = 0;
-                    }
-                    break;
-                }else if (downArray[i] == 0){
-                    downArray[i] = timeBetweenFloors;
-                    currentFloor -= i+1;
-                    if (currentFloor < 0){
-                        currentFloor = 0;
-                    }
-                    break;
-                }else if (timeBetweenFloors < (downArray[i] - 500)){
-                    for (int j = nbOfFloors-2; j > i; j--){
-                        downArray[j] = downArray[j-1];
-                    }
-                    downArray[i] = timeBetweenFloors;
-                    currentFloor -= i+1;
-                    if (currentFloor < 0){
-                        currentFloor = 0;
-                    }
+            for (int i = 0; i < nbOfFloors; i++){
+                if (timeBetweenFloors < (downArray[i] + timeLimitDown) && timeBetweenFloors > (downArray[i] - timeLimitDown)){
+                    currentFloor = currentFloor - (i+1);
+                    levels.add(currentFloor);
                     break;
                 }
             }
-
         }
-
-
     }
-
 
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
@@ -202,6 +123,8 @@ public class Movement {
         counter=0;
         sum = 0;
         speed = 0;
+        setTimeUp(timeUp);
+        setTimeDown(timeDown);
     }
 
 
@@ -216,15 +139,14 @@ public class Movement {
     public ArrayList<Float> getSumValues () {return sumValues;}
 
     public void initializeArray(){
-        array = new float[nbOfFloors-1];
-        upArray = new float[nbOfFloors-1];
-        downArray = new float[nbOfFloors-1];
-        for (int i = 0; i < nbOfFloors-1; i++){
-            upArray[i] = 0;
-            downArray[i] = 0;
-            array[i] = 0;
+        upArray = new float[nbOfFloors];
+        downArray = new float[nbOfFloors];
+        for (int i = 0; i < nbOfFloors; i++){
+            upArray[i] = timeUp * (i+1);
+            downArray[i] = timeDown * (i+1);
+            Log.i("i+ " + nbOfFloors + " " + i, "array+ " + upArray[i]);
         }
-
+        levels.add(currentFloor);
     }
 
     public long getOverallTime() {
@@ -232,20 +154,20 @@ public class Movement {
     }
 
     public void setMaxAmp(float maxAmp) {
-        this.maxAmp = maxAmp;
         averMaxAmp = maxAmp*0.7f;
     }
 
     public void setMinAmp(float minAmp) {
-        this.minAmp = minAmp;
         averMinAmp = minAmp*0.7f;
     }
 
-    public long getTime() {
-        return timeBetween1;
+    public void setTimeUp(long timeUp) {
+        this.timeUp = timeUp;
+        timeLimitUp = timeUp/2;
     }
 
-    public long getTime1() {
-        return timeBetween2;
+    public void setTimeDown(long timeDown) {
+        this.timeDown = timeDown;
+        timeLimitDown = timeDown/2;
     }
 }
