@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class Movement {
 
     private int nbOfFloors;
-    private int startFloor;
-    private int endFloor;
     private int currentFloor;
 
     private boolean onMove = false;
@@ -193,7 +191,7 @@ public class Movement {
 
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
-    public void setStartFloor(int startFloor) { this.startFloor = startFloor-1; currentFloor = startFloor-1; }
+    public void setStartFloor(int startFloor) { currentFloor = startFloor; }
 
     public int getCurrentFloor() { return currentFloor; }
 

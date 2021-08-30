@@ -32,7 +32,7 @@ public class LaunchingActivity extends AppCompatActivity {
                     int nF = sharedPreferences.getInt("NUMBER_OF_FLOORS_KEY" , 0);
                     int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
 
-                    if (nF != 0 && sF != 0){
+                    if (nF != 0 && sF <= nF){
                         Intent preferenceIntent = new Intent(LaunchingActivity.this, MainActivity.class);
                         LaunchingActivity.this.startActivity(preferenceIntent);
                     }

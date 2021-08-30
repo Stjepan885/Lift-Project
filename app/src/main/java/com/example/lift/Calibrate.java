@@ -56,6 +56,8 @@ public class Calibrate extends AppCompatActivity {
 
     private long floorStartTime;
     private long timeBetweenFloors;
+    private long upTimeNew;
+    private long downTimeNew;
 
     private float maxAmp;
     private float minAmp;
@@ -98,7 +100,7 @@ public class Calibrate extends AppCompatActivity {
                 if (onAcc) {
                     calibrateAcceleration(tz);
                 }else if(onTime){
-
+                    calibrateTime(tz);
                 }
             }
         });
@@ -150,7 +152,7 @@ public class Calibrate extends AppCompatActivity {
                 onAcc = false;
                 timeSet = false;
                 timeSetOff();
-
+                onPause();
                 try {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -162,10 +164,25 @@ public class Calibrate extends AppCompatActivity {
 
                     maxAccText.setText(0+"");
                     minAccText.setText(0+"");
+                    maxAcceleration = 0;
+                    minAcceleration = 0;
 
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        startTimeCalibration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
+                onTime = true;
+                floorStartTime = System.currentTimeMillis();
+                averMaxAmp = maxAcceleration * 0.8f;
+                averMinAmp = minAcceleration * 0.8f;
+                upDown = 0;
+                sum = 0;
             }
         });
 
@@ -178,8 +195,8 @@ public class Calibrate extends AppCompatActivity {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", 0);
-                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", 0);
+                    editor.putFloat("TIME_TWO_FLOORS_UP_KEY", upTimeNew);
+                    editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", downTimeNew);
                     editor.commit();
                     Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
 
@@ -187,18 +204,6 @@ public class Calibrate extends AppCompatActivity {
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-        startTimeCalibration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onResume();
-                floorStartTime = System.currentTimeMillis();
-                averMaxAmp = maxAcceleration * 0.8f;
-                averMinAmp = minAcceleration * 0.8f;
-                upDown = 0;
-                sum = 0;
             }
         });
 
@@ -214,8 +219,8 @@ public class Calibrate extends AppCompatActivity {
                     editor.putFloat("TIME_TWO_FLOORS_DOWN_KEY", 0);
                     editor.commit();
                     Toast.makeText(Calibrate.this, "Data saved", Toast.LENGTH_SHORT).show();
-
-
+                    newTimeTwoFloorsUp.setText(0+"");
+                    newTimeTwoFloorsDown.setText(0+"");
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
                 }
@@ -283,6 +288,16 @@ public class Calibrate extends AppCompatActivity {
                 timeBetweenFloors = System.currentTimeMillis() - floorStartTime;
                 floorChange = true;
             }
+        }
+
+        if (floorChange == true && upDownPrevious == 1){
+            floorChange = false;
+            upTimeNew = timeBetweenFloors;
+            newTimeTwoFloorsUp.setText(upTimeNew+"");
+        }else if (floorChange == true && upDownPrevious == 2){
+            floorChange = false;
+            downTimeNew = timeBetweenFloors;
+            newTimeTwoFloorsDown.setText(downTimeNew+"");
         }
 
     }
