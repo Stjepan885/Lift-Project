@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView timeBetween;
     TextView timeBetween1;
+
+
 
 
     /*
@@ -86,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         timeBetween = findViewById(R.id.textTimeBetween);
         timeBetween1 = findViewById(R.id.textTimeBetween1);
+
+
 
         Button chartButton = findViewById(R.id.buttonChart);
         //Button saveButton = findViewById(R.id.saveButton);

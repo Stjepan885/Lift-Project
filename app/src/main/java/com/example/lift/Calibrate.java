@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,8 @@ public class Calibrate extends AppCompatActivity {
     private TextView activeAcc;
     private TextView activeTime;
 
+    private Switch timeSwitch;
+
     private Accelerometer accelerometer;
 
     private int counter = 0;
@@ -48,6 +52,7 @@ public class Calibrate extends AppCompatActivity {
     private long oldTimeDown;
     private boolean timeSet = false;
     private boolean onTime = false;
+    private boolean switchTime = false;
 
     private float sum = 0;
 
@@ -89,7 +94,7 @@ public class Calibrate extends AppCompatActivity {
         newTimeTwoFloorsDown = findViewById(R.id.newTimeTwoFloorsDown);
         activeAcc = findViewById(R.id.textActiveAcc);
         activeTime = findViewById(R.id.textActiveTime);
-
+        timeSwitch = findViewById(R.id.switch1);
 
         timeSetOff();
 
@@ -107,6 +112,19 @@ public class Calibrate extends AppCompatActivity {
                     calibrateAcceleration(tz);
                 }else if(onTime){
                     calibrateTime(tz);
+                }
+            }
+        });
+
+        timeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                switchTime = timeSwitch.isChecked();
+                if (switchTime == false){
+                    timeSetOff();
+                    timeSet = false;
+                }else{
+                    timeSet = true;
                 }
             }
         });
@@ -239,6 +257,9 @@ public class Calibrate extends AppCompatActivity {
     }
 
     private void timeSet() {
+        if (timeSet ==false){
+            return;
+        }
         startTimeCalibration.getBackground().setAlpha(255);
         saveTime.getBackground().setAlpha(255);
         resetTime.getBackground().setAlpha(255);
