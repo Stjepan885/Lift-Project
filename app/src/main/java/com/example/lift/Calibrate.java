@@ -66,8 +66,6 @@ public class Calibrate extends AppCompatActivity {
     private long upTimeNew;
     private long downTimeNew;
 
-    private float maxAmp;
-    private float minAmp;
     private float averMaxAmp;
     private float averMinAmp;
 
@@ -119,12 +117,15 @@ public class Calibrate extends AppCompatActivity {
         timeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switchTime = timeSwitch.isChecked();
-                if (switchTime == false){
+                boolean x = timeSwitch.isChecked();
+                if (x == false){
                     timeSetOff();
                     timeSet = false;
+                    switchSave(false);
                 }else{
+                    timeSet();
                     timeSet = true;
+                    switchSave(true);
                 }
             }
         });
@@ -162,6 +163,7 @@ public class Calibrate extends AppCompatActivity {
                     counter = 10;
                     onPause();
                     timeSet();
+                    timeSet = true;
 
                 }catch (Exception e){
                     Toast.makeText(Calibrate.this, "No acceleration information", Toast.LENGTH_SHORT).show();
@@ -254,6 +256,20 @@ public class Calibrate extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void switchSave(boolean b) {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putBoolean("SWITCH_TIME_KEY", b);
+            editor.commit();
+            Toast.makeText(Calibrate.this, "Switch saved", Toast.LENGTH_SHORT).show();
+
+        }catch (Exception e){
+            Toast.makeText(Calibrate.this, "Error", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void timeSet() {

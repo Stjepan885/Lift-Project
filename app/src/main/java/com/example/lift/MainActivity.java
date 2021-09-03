@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private long timeUp;
     private long timeDown;
 
+    private boolean timeModeSwitch = false;
+
     TextView accelerationTextActivity;
     TextView trackingStatusTextActivity;
     TextView currentFloorTextActivity;
@@ -47,36 +49,11 @@ public class MainActivity extends AppCompatActivity {
     TextView timeBetween;
     TextView timeBetween1;
 
-
-
-
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 1000:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this, "granted", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(this, "fales", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-        }
-    }
-     */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
-        }
-*/
         //sensor and activities initialization
         accelerometer = new Accelerometer(this);
         movement = new Movement();
@@ -99,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Button stopButton = findViewById(R.id.stopButton);
 
         getLiftInformation();
+        checkTimeSwitch();
         checkIfSet();
 
         //sensor listeners
@@ -128,43 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        /*saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPause();
-                String numbers = new String();
-                ArrayList<Float> values = movment.getValues();
-                for (int i = 0; i < values.size(); i++){
-                    String n =  String.format("%.3f" , values.get(i));
-                    numbers += String.format("%.3f", values.get(i))   + "\n";
-                }
 
-                Log.i("dsa", ""+ Environment.getExternalStorageDirectory().toString());
-                String fileName = nazivFile.getText() + ".txt";
-                Log.i("fd", "" + fileName);
-                File file = new File(Environment.getExternalStorageDirectory().toString()+"/"+fileName);
-                try {
-
-                    file.createNewFile();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-                try {
-                    FileOutputStream outputStream = new FileOutputStream(file);
-                    outputStream.write(numbers.getBytes());
-                    outputStream.flush();
-                    outputStream.close();
-                    Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
-                }catch (FileNotFoundException e){
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "fileNot Found", Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,6 +145,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void checkTimeSwitch() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            boolean bo = sharedPreferences.getBoolean("SWITCH_TIME_KEY", false);
+
+            timeModeSwitch = bo;
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(MainActivity.this, "No lift information", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
     private void saveCurrentStatus() {
         endFloor = movement.getCurrentFloor();
         overallTime = movement.getOverallTime();
@@ -245,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
             movement.setMinAmp(minAcceleration);
             movement.setTimeUp(timeUp);
             movement.setTimeDown(timeDown);
+            movement.setSwitchModeTime(timeModeSwitch);
             movement.initializeArray();
         }
     }

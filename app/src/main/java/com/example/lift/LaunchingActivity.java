@@ -34,9 +34,13 @@ public class LaunchingActivity extends AppCompatActivity {
                     int sF = sharedPreferences.getInt("START_FLOOR_KEY" , 0);
                     long timeUp = sharedPreferences.getLong("TIME_TWO_FLOORS_UP_KEY",0);
                     long timeDown = sharedPreferences.getLong("TIME_TWO_FLOORS_DOWN_KEY",0);
+                    boolean switchTime = sharedPreferences.getBoolean("SWITCH_TIME_KEY", false);
 
 
                     if (nF != 0 && sF <= nF && timeUp != 0 && timeDown != 0){
+                        Intent preferenceIntent = new Intent(LaunchingActivity.this, MainActivity.class);
+                        LaunchingActivity.this.startActivity(preferenceIntent);
+                    }else if (nF != 0 && sF <= nF && switchTime == false){
                         Intent preferenceIntent = new Intent(LaunchingActivity.this, MainActivity.class);
                         LaunchingActivity.this.startActivity(preferenceIntent);
                     }else{

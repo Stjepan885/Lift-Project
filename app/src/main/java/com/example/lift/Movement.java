@@ -39,6 +39,8 @@ public class Movement {
     private float[] upArray;
     private float[] downArray;
 
+    private boolean switchModeTime = false;
+
     public void Prati(float z){
         if (counter < 10){
             z = 0;
@@ -50,11 +52,9 @@ public class Movement {
         speedValues.add(speed);
         sumValues.add(sum);
 
-
         if (upDown == 4 && sum < 0.01 && sum > -0.01){
             upDown = 0;
         }
-
 
          if (onMove == false && upDown == 0){
             //trip started +
@@ -90,6 +90,27 @@ public class Movement {
             floorChange = false;
 
             for (int i = 0; i < nbOfFloors; i++){
+
+                if (switchModeTime == false){
+                    if (upArray[i] == 0){
+                        upArray[i] = timeBetweenFloors;
+                        currentFloor += (i+1);
+                        if (currentFloor > nbOfFloors){
+                            currentFloor = nbOfFloors;
+                        }
+                        break;
+                    }else if (timeBetweenFloors < (upArray[i] - timeLimitUp)){
+                        for (int j = nbOfFloors-1; j > i; j--){
+                            upArray[j] = upArray[j-1];
+                        }
+                        upArray[i] = timeBetweenFloors;
+                        currentFloor += (i+1);
+                        if (currentFloor > nbOfFloors){
+                            currentFloor = nbOfFloors;
+                        }
+                        break;
+                    }
+                }
                 if (timeBetweenFloors < (upArray[i] + timeLimitUp) && timeBetweenFloors > (upArray[i] - timeLimitUp)){
                     currentFloor = currentFloor + (i+1);
                     if(currentFloor > nbOfFloors){
@@ -104,6 +125,29 @@ public class Movement {
             floorChange = false;
 
             for (int i = 0; i < nbOfFloors; i++){
+
+                if (switchModeTime == false){
+                    if (downArray[i] == 0){
+                        downArray[i] = timeBetweenFloors;
+                        currentFloor -= i+1;
+                        if (currentFloor < 0){
+                            currentFloor = 0;
+                        }
+                        break;
+                    }else if (timeBetweenFloors < (downArray[i] - timeLimitDown)){
+                        for (int j = nbOfFloors-1; j > i; j--){
+                            downArray[j] = downArray[j-1];
+                        }
+                        downArray[i] = timeBetweenFloors;
+                        currentFloor -= i+1;
+                        if (currentFloor < 0){
+                            currentFloor = 0;
+                        }
+                        break;
+                    }
+                }
+
+
                 if (timeBetweenFloors < (downArray[i] + timeLimitDown) && timeBetweenFloors > (downArray[i] - timeLimitDown)){
                     currentFloor = currentFloor - (i+1);
                     if(currentFloor < 0){
@@ -115,6 +159,7 @@ public class Movement {
             }
         }
     }
+
 
     public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
 
@@ -145,14 +190,26 @@ public class Movement {
     public ArrayList<Float> getSumValues () {return sumValues;}
 
     public void initializeArray(){
-        upArray = new float[nbOfFloors];
-        downArray = new float[nbOfFloors];
-        for (int i = 0; i < nbOfFloors; i++){
-            upArray[i] = timeUp * (i+1);
-            downArray[i] = timeDown * (i+1);
-            Log.i("i+ " + nbOfFloors + " " + i, "array+ " + upArray[i]);
+        if (switchModeTime){
+            upArray = new float[nbOfFloors];
+            downArray = new float[nbOfFloors];
+            for (int i = 0; i < nbOfFloors; i++){
+                upArray[i] = timeUp * (i+1);
+                downArray[i] = timeDown * (i+1);
+                Log.i("i+ " + nbOfFloors + " " + i, "array+ " + upArray[i]);
+            }
+            levels.add(currentFloor);
+        }else{
+            //filling 0
+            upArray = new float[nbOfFloors];
+            downArray = new float[nbOfFloors];
+            for (int i = 0; i < nbOfFloors; i++){
+                upArray[i] = 0;
+                downArray[i] = 0;
+                Log.i("i+ " + nbOfFloors + " " + i, "array+ " + upArray[i]);
+            }
+            levels.add(currentFloor);
         }
-        levels.add(currentFloor);
     }
 
     public long getOverallTime() {
@@ -175,5 +232,9 @@ public class Movement {
     public void setTimeDown(long timeDown) {
         this.timeDown = timeDown;
         timeLimitDown = timeDown/2;
+    }
+
+    public void setSwitchModeTime(boolean switchModeTime) {
+        this.switchModeTime = switchModeTime;
     }
 }
