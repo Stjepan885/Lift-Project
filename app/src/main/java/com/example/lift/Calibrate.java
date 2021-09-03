@@ -96,6 +96,7 @@ public class Calibrate extends AppCompatActivity {
 
         timeSetOff();
 
+
         getLiftAcceleration();
         getLiftTimeBetweenTwoFloors();
 
