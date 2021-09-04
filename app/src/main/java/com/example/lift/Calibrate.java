@@ -25,9 +25,9 @@ public class Calibrate extends AppCompatActivity {
     private Button startTimeCalibration;
     private Button saveTime;
     private Button resetTime;
+
     private TextView maxAccText;
     private TextView minAccText;
-
     private TextView oldTimeTwoFloorsUp;
     private TextView oldTimeTwoFloorsDown;
     private TextView newTimeTwoFloorsUp;
@@ -95,8 +95,6 @@ public class Calibrate extends AppCompatActivity {
         timeSwitch = findViewById(R.id.switch1);
 
         timeSetOff();
-
-
         getLiftAcceleration();
         getLiftTimeBetweenTwoFloors();
 
