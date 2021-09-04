@@ -53,7 +53,8 @@
         app:layout_constraintHorizontal_bias="0.934"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.455" />
+        app:layout_constraintVertical_bias="0.455"
+        android:textSize="10dp"/>
 
     <TextView
         android:id="@+id/newTimeTwoFloorsDown"
@@ -261,7 +262,8 @@
         app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.455" />
+        app:layout_constraintVertical_bias="0.455"
+        android:textSize="10dp"/>
 
     <TextView
         android:id="@+id/oldTimeTwoFloorsUp"

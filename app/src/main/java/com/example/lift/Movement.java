@@ -36,6 +36,7 @@ public class Movement {
     private ArrayList<Float> speedValues = new ArrayList<>();
 
     private ArrayList<Integer> levels = new ArrayList<>();
+
     private float[] upArray;
     private float[] downArray;
 
@@ -160,35 +161,6 @@ public class Movement {
         }
     }
 
-
-    public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
-
-    public void setStartFloor(int startFloor) { currentFloor = startFloor; }
-
-    public int getCurrentFloor() { return currentFloor; }
-
-    public void resetAll(){
-        accValues.clear();
-        sumValues.clear();
-        speedValues.clear();
-        counter=0;
-        sum = 0;
-        speed = 0;
-        setTimeUp(timeUp);
-        setTimeDown(timeDown);
-    }
-
-
-    public void setZeroSec() {
-        this.startTime = System.currentTimeMillis();
-    }
-
-    public int getUpDown() { return upDown; }
-
-    public ArrayList<Float> getSpeedValues() { return speedValues; }
-    public ArrayList<Float> getAccValues() {return accValues;}
-    public ArrayList<Float> getSumValues () {return sumValues;}
-
     public void initializeArray(){
         if (switchModeTime){
             upArray = new float[nbOfFloors];
@@ -212,8 +184,12 @@ public class Movement {
         }
     }
 
-    public long getOverallTime() {
-        return System.currentTimeMillis() - startTime;
+    public void setNbOfFloors(int nbOfFloors) { this.nbOfFloors = nbOfFloors; }
+
+    public void setStartFloor(int startFloor) { currentFloor = startFloor; }
+
+    public void setZeroSec() {
+        this.startTime = System.currentTimeMillis();
     }
 
     public void setMaxAmp(float maxAmp) {
@@ -237,4 +213,27 @@ public class Movement {
     public void setSwitchModeTime(boolean switchModeTime) {
         this.switchModeTime = switchModeTime;
     }
+
+    public int getUpDown() { return upDown; }
+
+    public int getCurrentFloor() { return currentFloor; }
+
+    public long getOverallTime() {
+        return System.currentTimeMillis() - startTime;
+    }
+
+    public void resetAll(){
+        accValues.clear();
+        sumValues.clear();
+        speedValues.clear();
+        counter=0;
+        sum = 0;
+        speed = 0;
+        setTimeUp(timeUp);
+        setTimeDown(timeDown);
+    }
+
+    public ArrayList<Float> getSpeedValues() { return speedValues; }
+    public ArrayList<Float> getAccValues() {return accValues;}
+    public ArrayList<Float> getSumValues () {return sumValues;}
 }

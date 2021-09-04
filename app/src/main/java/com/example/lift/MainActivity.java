@@ -34,10 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean startSet = true;
     private boolean active = false;
 
-    private long overallTime;
-
     private long timeUp;
     private long timeDown;
+    private long overallTime;
 
     private boolean timeModeSwitch = false;
 
@@ -45,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
     TextView trackingStatusTextActivity;
     TextView currentFloorTextActivity;
     TextView upDownTextActivity;
-
-    TextView timeBetween;
-    TextView timeBetween1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +60,8 @@ public class MainActivity extends AppCompatActivity {
         currentFloorTextActivity = (TextView) findViewById(R.id.timeText);
         upDownTextActivity = (TextView) findViewById(R.id.upDownText);
 
-        timeBetween = findViewById(R.id.textTimeBetween);
-        timeBetween1 = findViewById(R.id.textTimeBetween1);
-
-
 
         Button chartButton = findViewById(R.id.buttonChart);
-        //Button saveButton = findViewById(R.id.saveButton);
         Button resetButton = findViewById(R.id.buttonReset);
         Button startButton = findViewById(R.id.startButton);
         Button stopButton = findViewById(R.id.stopButton);
@@ -92,6 +83,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Buttons
+
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
+                if (set == false && startSet == false){
+                    Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
+                }else if (startSet == false){
+                    Toast.makeText(MainActivity.this, "Reset" , Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
+                    trackingStatusTextActivity.setText("Active");
+                    movement.setZeroSec();
+                }
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                movement.resetAll();
+                accelerationTextActivity.setText(""+0);
+                trackingStatusTextActivity.setText("Not Active");
+                currentFloorTextActivity.setText("" + startFloor);
+                upDownTextActivity.setText("Stationary");
+                startSet = true;
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                accelerometer.on = false;
+                startSet = false;
+                Toast.makeText(MainActivity.this, "Tracking stopped" , Toast.LENGTH_LONG).show();
+                saveCurrentStatus();
+                trackingStatusTextActivity.setText("Not Active");
+            }
+        });
+
         chartButton.setOnClickListener(new View.OnClickListener() {                                     //CHART button
             @Override
             public void onClick(View v) {
@@ -106,60 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (set == false && startSet == false){
-                    Toast.makeText(MainActivity.this, "Error" , Toast.LENGTH_LONG).show();
-                }else if (startSet == false){
-                    Toast.makeText(MainActivity.this, "Reset" , Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(MainActivity.this, "Tracking started" , Toast.LENGTH_LONG).show();
-                    trackingStatusTextActivity.setText("Active");
-                    movement.setZeroSec();
-                }
-            }
-        });
-        resetButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                movement.resetAll();
-                accelerationTextActivity.setText(""+0);
-                trackingStatusTextActivity.setText("Not Active");
-                currentFloorTextActivity.setText("" + startFloor);
-                upDownTextActivity.setText("Stationary");
-                startSet = true;
-            }
-        });
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPause();
-                accelerometer.on = false;
-                startSet = false;
-                Toast.makeText(MainActivity.this, "Tracking stopped" , Toast.LENGTH_LONG).show();
-                saveCurrentStatus();
-                trackingStatusTextActivity.setText("Not Active");
-            }
-        });
-    }
-
-    private void checkTimeSwitch() {
-        try {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            boolean bo = sharedPreferences.getBoolean("SWITCH_TIME_KEY", false);
-
-            timeModeSwitch = bo;
-
-        }catch (Exception e){
-            Toast toast = Toast.makeText(MainActivity.this, "No lift information", Toast.LENGTH_LONG);
-            toast.show();
-        }
-    }
-    private void saveCurrentStatus() {
-        endFloor = movement.getCurrentFloor();
-        overallTime = movement.getOverallTime();
     }
 
     private void getLiftInformation() {
@@ -187,6 +165,19 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
 
+    }
+
+    private void checkTimeSwitch() {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            boolean bo = sharedPreferences.getBoolean("SWITCH_TIME_KEY", false);
+
+            timeModeSwitch = bo;
+
+        }catch (Exception e){
+            Toast toast = Toast.makeText(MainActivity.this, "No lift information", Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     private void checkIfSet() {
@@ -221,6 +212,11 @@ public class MainActivity extends AppCompatActivity {
                 upDownTextActivity.setText("Braking");
                 break;
         }
+    }
+
+    private void saveCurrentStatus() {
+        endFloor = movement.getCurrentFloor();
+        overallTime = movement.getOverallTime();
     }
 
     @Override
